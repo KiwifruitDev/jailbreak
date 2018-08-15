@@ -31,7 +31,7 @@
 -- ####################################################################################
 
 local cvarAlwaysSpectator = CreateClientConVar( "jb_cl_option_always_spectate", "0", true, false )
-hook.Add("Initialize","JB.AutomateSpectatorSpawn",function()
+	hook.Add("Initialize","JB.AutomateSpectatorSpawn",function()
   if cvarAlwaysSpectator:GetBool() then
     RunConsoleCommand("jb_team_select_spectator");
   end

@@ -209,10 +209,13 @@ function JB.Gamemode:PlayerBindPress(p, bind, pressed)
 		if selectedTab > 0 and slots[selectedTab] then
 			if not slots[selectedTab][slotPos] or not IsValid(slots[selectedTab][slotPos]) then return true end
 			RunConsoleCommand("use",slots[selectedTab][slotPos]:GetClass())
-
+			surface.PlaySound("common/wpn_hudoff.wav");
 			nScroll = selectedTab;
 			selectedTab = 0;
 
+			return true;
+		elseif selectedTab > 0 and !slots[selectedTab] then
+			surface.PlaySound("common/wpn_denyselect.wav");
 			return true;
 		end
 	end

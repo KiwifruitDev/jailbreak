@@ -33,6 +33,7 @@
 JB.Gamemode.PlayerInitialSpawn = function(gm,ply)
 	ply:SetTeam(TEAM_PRISONER) -- always spawn as prisoner;
 	JB:DebugPrint(ply:Nick().." has successfully joined the server.");
+	ply:ConCommand("snd_restart") --if they join the server with the content addon, their sound may not work properly
 end;
 
 JB.Gamemode.PlayerSpawn = function(gm,ply)
@@ -93,9 +94,9 @@ JB.Gamemode.IsSpawnpointSuitable = function()
 end
 
 JB.Gamemode.PlayerDeath = function(gm, victim, weapon, killer)
-
+	victim:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
 	victim:SendNotification("You are muted until the round ends")
-
+	
 	if victim.GetWarden and IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden() == victim:GetWarden() then
 		JB:BroadcastNotification("The warden has died")
 		timer.Simple(.5,function()

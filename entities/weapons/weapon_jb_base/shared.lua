@@ -72,6 +72,7 @@ AddCSLuaFile()
 AddCSLuaFile("client.lua");
 
 local cvarAimToggle;
+local cvarAutoReload
 
 if SERVER then
 	include("server.lua");
@@ -82,12 +83,18 @@ if SERVER then
 	function cvarAimToggle:GetBool(ply)
 		return tobool(ply:GetInfoNum( "jb_cl_option_toggleaim", "0" ))
 	end
+
+	cvarAutoReload = {};
+	function cvarAutoReload:GetBool(ply)
+		return tobool(ply:GetInfoNum( "jb_cl_option_autoreload", "0" ))
+	end
 end
 
 if CLIENT then
 	include("client.lua");
 
 	cvarAimToggle = CreateClientConVar( "jb_cl_option_toggleaim", "0", true, true )
+	cvarAutoReload = CreateClientConVar( "jb_cl_option_autoreload", "0", true, true )
 end
 
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize; -- See: gamemode/core/sh_weapon_hack.lua
@@ -343,6 +350,9 @@ function SWEP:PrimaryAttack()
 	end
 
 	self:TakePrimaryAmmo(1);
+	if self:Clip1() <= 0 and cvarAutoReload:GetBool(self.Owner) then
+		self:Reload();
+	end
 end
 
 function SWEP:SecondaryAttack()

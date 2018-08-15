@@ -87,9 +87,17 @@ vgui.Register("JBNoticePanel",{
 		self.icon = NoticeMaterial[ NOTIFY_GENERIC ];
 		self.type = NOTIFY_GENERIC;
 		self.state = state_expand;
-		self.colorText = Color(255,255,255,0);
-		self.colorBrackets = Color(255,255,255,0);
-		self.distanceBrackets = 0;
+		if LocalPlayer():Team() == 1 then
+			self.colorText = Color(228,9,0,0); --Color(255,68,68,0);
+			self.colorBrackets = Color(228,9,0,0); --Color(255,68,68,0);
+		elseif LocalPlayer():Team() == 2 then
+			self.colorText = Color(39,146,255,0); --Color(255,68,68,0);
+			self.colorBrackets = Color(39,146,255,0); --Color(255,68,68,0);
+		else
+			self.colorText = Color(255,255,132,0); --Color(255,255,68,0);
+			self.colorBrackets = Color(255,255,132,0); --Color(255,255,68,0);
+		end
+			self.distanceBrackets = 0;
 		
 		self:SetSize(1,bracket_tall);
 	end,

@@ -152,6 +152,12 @@ end);
 
 // UTILITY FUNCTIONS
 local r;
+local function drawArmor(x,y,w,radius,amt)
+	for a = amt, amt + 180 * amt / 50 do
+		r=rad(a)* 2
+		drawTexturedRectRotated(x / 2 + cos(r) * radius, y / 2 - sin(r) * radius, w,75, a * 2)
+	end
+end
 local function drawHealth(x,y,w,radius,amt)
 	for a = amt, amt + 180 * amt / 100 do
 		r=rad(a)* 2
@@ -169,8 +175,18 @@ local function convertTime(t)
 	end
 	return (tostring( floor(t/60) ).." : "..sec )
 end
+local function convertTimeSeconds(t)
+	if t < 0 then
+		t = 0;
+	end
+
+	local sec = round(t - floor(t/60)*60)
+	return ( sec )
+end
 
 // Health and ammo
+local armorMemory = 0;
+local armor = 0;
 local healthMemory = 0;
 local health = 0;
 local wide_hp_1,wide_hp_2,height_hp;
@@ -181,19 +197,34 @@ local drawAmmoHealth = function()
 	healthMemory = approach(healthMemory,health,dt*50);
 	health=tostring(health);
 
+	if ply:Armor() > 0 then 
+		noTexture();
+		armor= clamp(ply:Armor(),0,50);
+		armorMemory = approach(armorMemory,armor,dt*25);
+		setDrawColor(JB.Color["#02029E"]);
+		drawArmor(256,256,24,86,armorMemory);
+	end
+
+	drawTexturedRect(0,0,0,0);
 	setDrawColor(JB.Color.white);
 	setMaterial(matHealthBottom);
+
 	drawTexturedRect(0,0,256,256);
-
 	noTexture();
-	setDrawColor(JB.Color["#CF1000"]);
-
+	if LocalPlayer():Team() == 1 then
+		setDrawColor(JB.Color["#E40900"]);
+	elseif LocalPlayer():Team() == 2 then
+		setDrawColor(JB.Color["#2D98FF"]);
+	else
+		setDrawColor(JB.Color["#FFFF84"]);
+	end
 	drawHealth(256,256,24,86,healthMemory);
+	
 
 	setFont("JBExtraLarge");
 	wide_hp_1,height = getTextSize(health);
 	setFont("JBSmall");
-	wide_hp_2 = getTextSize(" %\n HP");
+	wide_hp_2 = getTextSize(" HP");
 
 	activeWeapon = ply:GetActiveWeapon();
 
@@ -201,8 +232,8 @@ local drawAmmoHealth = function()
 		y = 64+32+12;
 
 		drawSimpleShadowText(health,"JBExtraLarge",128-(wide_hp_1 + wide_hp_2)/2,y-height/2 - 6,JB.Color["#DCDCDC"],0,0);
-		drawText(" %\n HP ","JBSmallShadow",128-(wide_hp_1 + wide_hp_2)/2 + wide_hp_1,y-height/2,JB.Color.black,0,0);
-		drawText(" %\n HP ","JBSmall",128-(wide_hp_1 + wide_hp_2)/2 + wide_hp_1,y-height/2,JB.Color["#DCDCDC"],0,0);
+		drawText(" HP ","JBSmallShadow",128-(wide_hp_1 + wide_hp_2)/2 + wide_hp_1,y-height/2,JB.Color.black,0,0);
+		drawText(" HP ","JBSmall",128-(wide_hp_1 + wide_hp_2)/2 + wide_hp_1,y-height/2,JB.Color["#DCDCDC"],0,0);
 
 		setDrawColor(JB.Color["#DCDCDC"]);
 		drawRect(128-40,128-2,1 + clamp(79 * (tonumber(ply:GetActiveWeapon():Clip1())/tonumber(ply:GetActiveWeapon().Primary and ply:GetActiveWeapon().Primary.ClipSize or 10)),0,79),4);
@@ -214,8 +245,8 @@ local drawAmmoHealth = function()
 		drawSimpleShadowText(text_ammo,"JBNormal",128+40,y,JB.Color["#DCDCDC"],2,1);
 	else
 		drawSimpleShadowText(health,"JBExtraLarge",128-(wide_hp_1 + wide_hp_2)/2,128-height/2 - 6,JB.Color["#DCDCDC"],0,0);
-		drawText(" %\n HP ","JBSmallShadow",128-(wide_hp_1 + wide_hp_2)/2 + wide_hp_1,128-height/2,JB.Color.black,0,0);
-		drawText(" %\n HP ","JBSmall",128-(wide_hp_1 + wide_hp_2)/2 + wide_hp_1,128-height/2,JB.Color["#DCDCDC"],0,0);
+		drawText(" HP ","JBSmallShadow",128-(wide_hp_1 + wide_hp_2)/2 + wide_hp_1,128-height/2,JB.Color.black,0,0);
+		drawText(" HP ","JBSmall",128-(wide_hp_1 + wide_hp_2)/2 + wide_hp_1,128-height/2,JB.Color["#DCDCDC"],0,0);
 	end
 
 	setDrawColor(JB.Color.white);
@@ -292,13 +323,14 @@ local drawTimer = function()
 	if IsValid(warden) then
 		y = warden.y + warden:GetTall();
 	end
-
 	setDrawColor(JB.Color.white);
 	setMaterial(matTime);
 	drawTexturedRect(scrW-16-128,y,128,64);
-
 	local timerText = state == STATE_IDLE and "WAITING" or state == STATE_ENDED and "ENDED" or state == STATE_MAPVOTE and "MAPVOTE" or
 	convertTime(60*(state == STATE_LASTREQUEST and 3 or 10) - (CurTime() - JB.RoundStartTime));
+	if convertTimeSeconds(60*(state == STATE_LASTREQUEST and 3 or 10) - (CurTime() - JB.RoundStartTime)) < 30 and floor(60*(state == STATE_LASTREQUEST and 3 or 10) - (CurTime() - JB.RoundStartTime)/60) <= 0 then
+		print("ay")
+	end
 
 	drawSimpleShadowText(timerText,"JBNormal",scrW-16-64,y+32,JB.Color.white,1,1);
 end

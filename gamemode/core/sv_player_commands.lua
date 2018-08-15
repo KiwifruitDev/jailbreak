@@ -56,6 +56,19 @@ end
 concommand.Add("jb_dropweapon", drop)
 JB.Util.addChatCommand("drop",drop);
 
+local bc = function( ply, cmd, args )
+	if(ply:IsAdmin()) then
+		JB:BroadcastNotification(table.concat(args, " "));
+		if table.concat(args, " ") == "gravity gun" then
+			for _,ply in ipairs( player.GetAll() ) do
+				ply:Give("weapon_physcannon")
+			end		
+		end
+	end
+end
+concommand.Add("jb_broadcast", bc)
+JB.Util.addChatCommand("broadcast",bc);
+
 local pickup = function(p)
 	local e = p:GetEyeTrace().Entity
 

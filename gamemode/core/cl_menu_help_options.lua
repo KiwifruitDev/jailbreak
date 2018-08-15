@@ -227,6 +227,7 @@ function JB.MENU_HELP_OPTIONS()
 			{"jb_cl_option_toggleaim","toggle","Toggle aim (default: Right Mouse)"},
 			{"jb_cl_option_togglecrouch","toggle","Toggle crouch (default: CTRL)"},
 			{"jb_cl_option_togglewalk","toggle","Toggle walk (default: ALT)"},
+			{"jb_cl_option_autoreload","toggle","Automatically reload empty clips"},
 			{"jb_cl_option_always_spectate","toggle","Always spawn as spectator after joining"}
 		} do
 			local fragment=container:Add("Panel");

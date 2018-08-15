@@ -262,13 +262,13 @@ function JB:NewRound(rounds_passed)
 
 		chainState(STATE_SETUP,tonumber(JB.Config.setupTime),function()
 			JB:DebugPrint("Setup finished, round started.")
-			chainState(STATE_PLAYING,(600) - tonumber(JB.Config.setupTime),function()
+			chainState(STATE_PLAYING,(510) - tonumber(JB.Config.setupTime),function()
 				JB:EndRound();
 			end);
 
 			if not IsValid(JB:GetWarden()) then
 				JB:DebugPrint("No warden after setup time; Freeday!")
-				JB:BroadcastNotification("Today is a freeday");
+				JB:BroadcastNotification("There is no warden, today is a Freeday!");
 			end
 		end);
 

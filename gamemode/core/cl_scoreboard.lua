@@ -309,7 +309,7 @@ vgui.Register("JBScoreboard",{
 		self.Name:Dock( TOP )
 		self.Name:SizeToContents();
 		self.Name:SetContentAlignment( 5 )
-		self.Name:SetText("Jail Break 7");
+		self.Name:SetText(GetHostName());
 
 		self.Spectators = self.Footer:Add( "DLabel" )
 		self.Spectators:SetFont("JBNormal");
@@ -362,7 +362,7 @@ vgui.Register("JBScoreboard",{
 		self.Host:SetTextColor( color_text );
 		self.Host:Dock(TOP);
 		self.Host:SetContentAlignment( 5 )
-		self.Host:SetText("A gamemode by Excl, hosted by "..JB.Config.website);
+		self.Host:SetText("Jail Break gamemode by Excl");
 		self.Host:SizeToContents();
 
 		self.ScoresGuards = self:Add( "DScrollPanel" )
