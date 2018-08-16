@@ -49,7 +49,7 @@ local Hints = {
 
 /* LIBRARIES */
 local allPlayers=player.GetAll
-
+local thirtysecleft = false;
 local rad=math.rad;
 local sin=JB.Util.memoize(math.sin);
 local cos=JB.Util.memoize(math.cos);
@@ -174,14 +174,6 @@ local function convertTime(t)
 		sec = "0"..sec;
 	end
 	return (tostring( floor(t/60) ).." : "..sec )
-end
-local function convertTimeSeconds(t)
-	if t < 0 then
-		t = 0;
-	end
-
-	local sec = round(t - floor(t/60)*60)
-	return ( sec )
 end
 
 // Health and ammo
@@ -323,14 +315,20 @@ local drawTimer = function()
 	if IsValid(warden) then
 		y = warden.y + warden:GetTall();
 	end
-	setDrawColor(JB.Color.white);
+	if convertTime(60*(state == STATE_LASTREQUEST and 3 or 10) - (CurTime() - JB.RoundStartTime)) == "0 : 30" then --not a good way to do this but still
+		if thirtysecleft == false then
+			thirtysecleft = true;
+			--LocalPlayer():SendNotification("30 seconds remaining!")
+			surface.PlaySound( "otterjailbreak/lc_30secleft.mp3" )
+		end
+		setDrawColor(JB.Color.red);
+	else
+		setDrawColor(JB.Color.white);
+	end
 	setMaterial(matTime);
 	drawTexturedRect(scrW-16-128,y,128,64);
 	local timerText = state == STATE_IDLE and "WAITING" or state == STATE_ENDED and "ENDED" or state == STATE_MAPVOTE and "MAPVOTE" or
 	convertTime(60*(state == STATE_LASTREQUEST and 3 or 10) - (CurTime() - JB.RoundStartTime));
-	if convertTimeSeconds(60*(state == STATE_LASTREQUEST and 3 or 10) - (CurTime() - JB.RoundStartTime)) < 30 and floor(60*(state == STATE_LASTREQUEST and 3 or 10) - (CurTime() - JB.RoundStartTime)/60) <= 0 then
-		print("ay")
-	end
 
 	drawSimpleShadowText(timerText,"JBNormal",scrW-16-64,y+32,JB.Color.white,1,1);
 end

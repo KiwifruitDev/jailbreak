@@ -118,16 +118,20 @@ function JB:DamageLog_AddPlayerDeath(p, weapon, killer)
 
 	local subject=p;
 
-	--for _,ply inpairs(player.GetAll()) do --kill sfx
-		--p:EmitSound("/misc/ks_tier_01_death.wav")
-	--end
+	if p:Team() == 1 then --death sfx
+		p:EmitSound("/misc/ks_tier_01_death.wav")
+	elseif p.GetWarden and p:GetWarden() then
+		p:EmitSound("/misc/ks_tier_04_death.wav")
+	else 
+		p:EmitSound("/misc/ks_tier_03_death.wav")
+	end
+
 	table.insert(message,team.GetColor(p:Team()));
 	table.insert(message,p:Nick());
 	table.insert(message,JB.Color.white);
 	table.insert(message," ("..p:SteamID()..")")
 
 	if IsValid(killer) and killer:IsPlayer() then
-		p:EmitSound("/misc/ks_tier_01_death.wav")
 		if killer == p then
 			table.insert(message," has commited suicide")
 		else

@@ -124,6 +124,7 @@ function JB.Gamemode:PlayerBindPress(p, bind, pressed)
 
 		if selectedTab ~= nScroll then
 			surface.PlaySound("common/wpn_moveselect.wav");
+			--LocalPlayer():SendNotification("30 seconds remaining!")
 		end
 		selectedTab = nScroll;
 		ArrangeSlots();
