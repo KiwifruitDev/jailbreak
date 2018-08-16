@@ -123,6 +123,7 @@ function JB.MENU_WARDEN()
 		
 		btn.OnMouseReleased = function()
 			RunConsoleCommand("jb_claim_warden");
+			surface.PlaySound( "otterjailbreak/lc_spawncount.mp3" )
 			frame:Remove();
 		end	
 		

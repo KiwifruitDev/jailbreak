@@ -140,12 +140,13 @@ hook.Add("Think","JB.Think.PredictWardenFrame",function()
 	if IsValid(warden) and (not IsValid(JB:GetWarden()) or warden.Player ~= JB:GetWarden()) then
 		warden:Remove();
 		warden=nil;
+		print("removed warden")
 	end
 
 	if IsValid(JB:GetWarden()) and not IsValid(warden) then
 		warden=vgui.Create("JBHUDWardenFrame");
 		warden:SetPlayer(JB:GetWarden());
-
+		print("new warden")
 		notification.AddLegacy(warden.Player:Nick().." is the warden",NOTICE_GENERIC);
 	end
 end);
@@ -315,18 +316,19 @@ local drawTimer = function()
 	if IsValid(warden) then
 		y = warden.y + warden:GetTall();
 	end
+	setDrawColor(JB.Color.white);
 	if convertTime(60*(state == STATE_LASTREQUEST and 3 or 10) - (CurTime() - JB.RoundStartTime)) == "0 : 30" then --not a good way to do this but still
 		if thirtysecleft == false then
 			thirtysecleft = true;
 			--LocalPlayer():SendNotification("30 seconds remaining!")
 			surface.PlaySound( "otterjailbreak/lc_30secleft.mp3" )
 		end
-		setDrawColor(JB.Color.red);
-	else
-		setDrawColor(JB.Color.white);
 	end
 	setMaterial(matTime);
 	drawTexturedRect(scrW-16-128,y,128,64);
+	if thirtysecleft == true then
+		setDrawColor(JB.Color.red);
+	end
 	local timerText = state == STATE_IDLE and "WAITING" or state == STATE_ENDED and "ENDED" or state == STATE_MAPVOTE and "MAPVOTE" or
 	convertTime(60*(state == STATE_LASTREQUEST and 3 or 10) - (CurTime() - JB.RoundStartTime));
 
