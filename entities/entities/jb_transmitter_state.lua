@@ -62,6 +62,7 @@ function ENT:SetupDataTables()
 	self:NetworkVar( "Entity", 2, "JBWarden" );
 
 	self:NetworkVar ( "Bool", 0, "JBWarden_PVPDamage");
+	self:NetworkVar ( "Bool", 0, "JBWarden_PVPDamageGuards");
 	self:NetworkVar ( "Bool", 1, "JBWarden_ItemPickup");
 		
 	if ( SERVER ) then

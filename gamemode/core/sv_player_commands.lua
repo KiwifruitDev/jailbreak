@@ -60,6 +60,7 @@ local bc = function( ply, cmd, args )
 	if(ply:IsAdmin()) then
 		JB:BroadcastNotification(table.concat(args, " "));
 		if table.concat(args, " ") == "gravity gun" then
+		print("gravity gun")
 			for _,ply in ipairs( player.GetAll() ) do
 				ply:Give("weapon_physcannon")
 			end		
@@ -90,6 +91,9 @@ local function teamSwitch(p,cmd)
 
 	if cmd == "jb_team_select_guard" and JB:GetGuardsAllowed() > #team.GetPlayers(TEAM_GUARD) and p:Team() ~= TEAM_GUARD then
 		p:SetTeam(TEAM_GUARD);
+		if p:Alive() then
+			p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+		end
 		p:KillSilent();
 		p:SendNotification("Switched to guards");
 
@@ -99,6 +103,9 @@ local function teamSwitch(p,cmd)
 		p:SetDeaths(0);
 	elseif cmd == "jb_team_select_prisoner" and p:Team() ~= TEAM_PRISONER then
 		p:SetTeam(TEAM_PRISONER);
+		if p:Alive() then
+			p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+		end
 		p:KillSilent();
 		p:SendNotification("Switched to prisoners");
 
@@ -155,12 +162,18 @@ concommand.Add("jb_admin_swap",function(p,c,a)
 		if v:SteamID() == steamid then
 			if v:Team() == TEAM_GUARD then
 				v:SetTeam(TEAM_PRISONER);
+				if p:Alive() then
+					p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+				end
 				v:KillSilent();
 				v:SendNotification("Forced to prisoners");
 
 				hook.Call("JailBreakPlayerSwitchTeam",JB.Gamemode,p,p:Team());
 			else
 				v:SetTeam(TEAM_GUARD);
+				if p:Alive() then
+					p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+				end
 				v:KillSilent();
 				v:SendNotification("Forced to guards");
 

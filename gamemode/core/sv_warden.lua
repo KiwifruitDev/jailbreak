@@ -69,7 +69,10 @@ concommand.Add("jb_warden_changecontrol",function(p,c,a)
 		return	
 	elseif opt == "PVP" then
 		JB.TRANSMITTER:SetJBWarden_PVPDamage(tobool(val));
-		JB:BroadcastNotification("Friendly fire is now "..(tobool(val) and "enabled" or "disabled"));
+		JB:BroadcastNotification("Friendly fire is now "..(tobool(val) and "enabled" or "disabled").." for prisoners");
+	elseif opt == "PVPGuards" then
+		JB.TRANSMITTER:SetJBWarden_PVPDamageGuards(tobool(val));
+		JB:BroadcastNotification("Friendly fire is now "..(tobool(val) and "enabled" or "disabled").." for guards");
 	elseif opt == "Pickup" then
 		JB.TRANSMITTER:SetJBWarden_ItemPickup(tobool(val));
 		JB:BroadcastNotification("Item pickup is now "..(tobool(val) and "enabled" or "disabled"));

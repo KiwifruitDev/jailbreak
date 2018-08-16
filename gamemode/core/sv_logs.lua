@@ -131,7 +131,7 @@ function JB:DamageLog_AddPlayerDeath(p, weapon, killer)
 		if killer == p then
 			table.insert(message," has commited suicide")
 		else
-			killer:EmitSound("/misc/ks_tier_01.wav")
+			--killer:EmitSound("/misc/ks_tier_01.wav")
 			table.insert(message," was killed by ")
 			table.insert(message,team.GetColor(killer:Team()));
 			table.insert(message,killer:Nick());

@@ -107,7 +107,7 @@ local ententionsDone = 0;
 function JB:Mapvote_ExtendCurrentMap() 		// You can call this from your own admin mod/mapvote if you want to extend the current map.
 	JB.RoundsPassed = 0;
 	ententionsDone = ententionsDone+1;
-	chainState(STATE_ENDED,5,function()
+	chainState(STATE_ENDED,10,function()
 		JB:NewRound();
 	end);
 end
@@ -262,7 +262,7 @@ function JB:NewRound(rounds_passed)
 
 		chainState(STATE_SETUP,tonumber(JB.Config.setupTime),function()
 			JB:DebugPrint("Setup finished, round started.")
-			chainState(STATE_PLAYING,(510) - tonumber(JB.Config.setupTime),function()
+			chainState(STATE_PLAYING,(600) - tonumber(JB.Config.setupTime),function()
 				JB:EndRound();
 			end);
 
@@ -294,6 +294,7 @@ function JB:NewRound(rounds_passed)
 
 		if IsValid(JB.TRANSMITTER) then
 			JB.TRANSMITTER:SetJBWarden_PVPDamage(false);
+			JB.TRANSMITTER:SetJBWarden_PVPDamageGuards(false);
 			JB.TRANSMITTER:SetJBWarden_ItemPickup(false);
 			JB.TRANSMITTER:SetJBWarden_PointerType("0");
 			JB.TRANSMITTER:SetJBWarden(NULL);
@@ -309,7 +310,12 @@ function JB:NewRound(rounds_passed)
 		net.Start("JB.SendRoundUpdate"); net.WriteInt(STATE_SETUP,8); net.WriteInt(rounds_passed,32); net.Broadcast();
 	elseif CLIENT and IsValid(LocalPlayer()) then
 		notification.AddLegacy("Round "..rounds_passed,NOTIFY_GENERIC);
-
+		if LocalPlayer():Team() == 1 then
+			surface.PlaySound( "otterjailbreak/lc_spawndragon.mp3" )
+		elseif LocalPlayer():Team() == 2 then
+			notification.AddLegacy("Press F4 to claim warden");
+			surface.PlaySound( "otterjailbreak/lc_spawnbaron.mp3" )
+		end
 		LocalPlayer():ConCommand("-voicerecord");
 	end
 
@@ -325,7 +331,7 @@ function JB:EndRound(winner)
 			return; // Halt the round system; we're running a custom mapvote!
 		end
 
-		chainState(STATE_ENDED,5,function()
+		chainState(STATE_ENDED,10,function()
 			JB.Util.iterate(player.GetAll()):Freeze(true);
 			JB:NewRound();
 		end);
@@ -336,7 +342,17 @@ function JB:EndRound(winner)
 		net.Broadcast(p);
 
 		net.Start("JB.SendRoundUpdate"); net.WriteInt(STATE_ENDED,8); net.WriteInt(winner or 0, 8); net.Broadcast();
-	elseif CLIENT then
+	elseif CLIENT then 
+		if IsValid(LocalPlayer()) then
+			--LocalPlayer():ConCommand("stopsound")
+			if winner == TEAM_PRISONER then
+				surface.PlaySound( "otterjailbreak/lc_dragonwin.mp3" )
+			elseif winner == TEAM_GUARD then
+				surface.PlaySound( "otterjailbreak/lc_knightwin.mp3" )
+			else 
+				surface.PlaySound( "music/trombonetauntv2.mp3" )
+			end
+		end
 		notification.AddLegacy(winner == TEAM_PRISONER and "Prisoners win" or winner == TEAM_GUARD and "Guards win" or "Draw",NOTIFY_GENERIC);
 	end
 
