@@ -165,7 +165,7 @@ vgui.Register("JBScoreboard.PlayerRow",{
 		local white = self.Player:Alive() and JB.Color.white or JB.Color["#BBB"]
 
 		--Name
-		local name=(self.hover and (self.Player:Deaths().." rounds" or "")..(", Killstreak: "..self.Player:GetNWInt("killstreak") or "")..(ES and ", "..math.floor(tonumber(self.Player:ESGetNetworkedVariable("playtime",0))/60).." hours playtime" or "")) or self.Player:Nick();
+		local name=(self.hover and (self.Player:Deaths().." rounds" or "")..(self.Player:GetNWInt("killstreakkit") == 1 and self.Player:GetNWInt("killstreak") == 0 and ", Killstreaks Active" or self.Player:GetNWInt("killstreakkit") == 1 and ", Killstreak: "..self.Player:GetNWInt("killstreak") or "")..(ES and ", "..math.floor(tonumber(self.Player:ESGetNetworkedVariable("playtime",0))/60).." hours playtime" or "")) or self.Player:Nick();
 		draw.SimpleText(name,"JBSmallShadow",self.Avatar.x + self.Avatar:GetWide() + 16,h/2 - 1,JB.Color.black,0,1);
 		draw.SimpleText(name,"JBSmall",self.Avatar.x + self.Avatar:GetWide() + 16,h/2 - 1,white,0,1);
 

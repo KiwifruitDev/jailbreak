@@ -307,7 +307,6 @@ function JB:NewRound(rounds_passed)
 		net.Start("JB.SendRoundUpdate"); net.WriteInt(STATE_SETUP,8); net.WriteInt(rounds_passed,32); net.Broadcast();
 	elseif CLIENT and IsValid(LocalPlayer()) then
 		notification.AddLegacy("Round "..rounds_passed,NOTIFY_GENERIC);
-		print("state "..LocalPlayer():GetNWInt("killstreak"))
 		if LocalPlayer():Team() == 1 then
 			surface.PlaySound( "otterjailbreak/lc_spawndragon.mp3" )
 		elseif LocalPlayer():Team() == 2 then

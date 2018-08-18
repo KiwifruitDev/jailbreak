@@ -64,21 +64,21 @@ end
 concommand.Add("jb_broadcast", bc)
 JB.Util.addChatCommand("broadcast",bc);
 
-local setks = function( ply, cmd, args )
-	if(ply:IsAdmin()) then
-		ply:SetNWInt("killstreak", (ply:GetNWInt("killstreak")+1))
+local addks = function( ply, cmd, args )
+	if(ply:IsAdmin() and ply:GetNWInt("killstreakkit") == 1) then
+		ply:SetNWInt("killstreak", (ply:GetNWInt("killstreak")+tonumber(table.concat(args, " "))))
 	end
 end
-concommand.Add("jb_addks", setks)
-JB.Util.addChatCommand("addks",setks);
+concommand.Add("jb_addks", addks)
+JB.Util.addChatCommand("addks",addks);
 
-local setks2 = function( ply, cmd, args )
-	if(ply:IsAdmin()) then
-		ply:SetNWInt("killstreak", 0)
+local setks = function( ply, cmd, args )
+	if(ply:IsAdmin() and ply:GetNWInt("killstreakkit") == 1) then
+		ply:SetNWInt("killstreak", (tonumber(table.concat(args, " "))))
 	end
 end
-concommand.Add("jb_resetks", setks2)
-JB.Util.addChatCommand("resetks",setks2);
+concommand.Add("jb_setks", setks)
+JB.Util.addChatCommand("setks",setks);
 
 local givewep = function( ply, cmd, args )
 	if(ply:IsAdmin()) then
@@ -123,7 +123,7 @@ local function teamSwitch(p,cmd)
 	if !IsValid(p) then return end
 
 	if cmd == "jb_team_select_guard" and JB:GetGuardsAllowed() > #team.GetPlayers(TEAM_GUARD) and p:Team() ~= TEAM_GUARD then
-		if p:Alive() and JB:AlivePrisoners() > 1 then
+		if p:Alive() and JB.State ~= (STATE_MAPVOTE or STATE_IDLE) and JB:AlivePrisoners() > 1 then
 			print(JB:AlivePrisoners())
 			p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
 		end
@@ -137,7 +137,7 @@ local function teamSwitch(p,cmd)
 		p:SetDeaths(0);
 	elseif cmd == "jb_team_select_prisoner" and p:Team() ~= TEAM_PRISONER then
 		print(JB:AliveGuards())
-		if p:Alive() and JB:AliveGuards() > 1 then
+		if p:Alive() and JB.State ~= (STATE_MAPVOTE or STATE_IDLE) and JB:AliveGuards() > 1 then
 			p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
 		end
 		p:SetTeam(TEAM_PRISONER);
@@ -195,20 +195,18 @@ concommand.Add("jb_admin_swap",function(p,c,a)
 
 	for k,v in ipairs(player.GetAll())do
 		if v:SteamID() == steamid then
+			if p:Alive() then
+				p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+			end
 			if v:Team() == TEAM_GUARD then
 				v:SetTeam(TEAM_PRISONER);
-				if p:Alive() then
-					p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
-				end
+				
 				v:KillSilent();
 				v:SendNotification("Forced to prisoners");
 
 				hook.Call("JailBreakPlayerSwitchTeam",JB.Gamemode,p,p:Team());
 			else
 				v:SetTeam(TEAM_GUARD);
-				if p:Alive() then
-					p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
-				end
 				v:KillSilent();
 				v:SendNotification("Forced to guards");
 

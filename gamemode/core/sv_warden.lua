@@ -133,11 +133,22 @@ concommand.Add("jb_warden_placepointer",function(p,c,a)
 	local typ = tostring(a[1]);
 	if not typ then return end;
 	local pos = p:GetEyeTrace().HitPos;
-
-	JB:DebugPrint("Warden "..p:Nick().." has placed a marker at "..tostring(pos));
-	JB:BroadcastQuickNotification("The warden has placed a marker");
-	for _,ply in ipairs( player.GetAll() ) do
-		ply:SendLua( string.format( "surface.PlaySound( %q )", "coach/coach_go_here.wav" ))
+	if typ ~= "0" then
+		JB:DebugPrint("Warden "..p:Nick().." has placed a marker at "..tostring(pos));
+		JB:BroadcastQuickNotification("The warden has placed a marker");
+		for _,ply in ipairs( player.GetAll() ) do
+			if typ == "generic" then
+				ply:SendLua( string.format( "surface.PlaySound( %q )", "coach/coach_go_here.wav" ))
+			elseif typ == "exclamation" then
+				ply:SendLua( string.format( "surface.PlaySound( %q )", "coach/coach_attack_here.wav" ))
+			elseif typ == "question" then
+				ply:SendLua( string.format( "surface.PlaySound( %q )", "coach/coach_look_here.wav" ))
+			elseif typ == "line" then
+				ply:SendLua( string.format( "surface.PlaySound( %q )", "coach/coach_go_here.wav" ))
+			elseif typ == "cross" then
+				ply:SendLua( string.format( "surface.PlaySound( %q )", "coach/coach_defend_here.wav" ))
+			end
+		end
 	end
 
 	pointerRemove = CurTime()+120;

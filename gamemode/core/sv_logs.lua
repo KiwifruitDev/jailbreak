@@ -53,7 +53,6 @@ local function convertTime(t)
 	return (tostring( math.floor(t/60) )..":"..sec )
 end
 
-
 function JB:DamageLog_AddEntityTakeDamage( p,dmg )
 	if ( IsValid(p) and p:IsPlayer() and dmg:GetDamage() ~= 0) then
 		if not JB.ThisRound.Logs then
@@ -117,10 +116,6 @@ function JB:DamageLog_AddPlayerDeath(p, weapon, killer)
 	local message={};
 
 	local subject=p;
-	if IsValid(killer) and killer:Alive() then
-		print(killer:GetNWInt("killstreak"))
-		print(killer:Nick().." has a killstreak of "..p:GetNWInt("killstreak"))
-	end
 
 	table.insert(message,team.GetColor(p:Team()));
 	table.insert(message,p:Nick());
@@ -131,7 +126,6 @@ function JB:DamageLog_AddPlayerDeath(p, weapon, killer)
 		if killer == p then
 			table.insert(message," has commited suicide")
 		else
-			killer:SetNWInt("killstreak", (killer:GetNWInt("killstreak")+1)) --killstreaks
 			--killer:EmitSound("/misc/ks_tier_01.wav")
 			table.insert(message," was killed by ")
 			table.insert(message,team.GetColor(killer:Team()));

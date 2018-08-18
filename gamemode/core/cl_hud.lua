@@ -104,11 +104,11 @@ local matRestricted = Material("materials/jailbreak_excl/hud_restricted.png")
 
 // PRECACHING SOUNDS
 --RunConsoleCommand("snd_restart","")
-util.PrecacheSound("coach/coach_attack_here.mp3")
-util.PrecacheSound("coach/coach_defend_here.mp3")
-util.PrecacheSound("coach/coach_go_here.mp3")
-util.PrecacheSound("coach/coach_look_here.mp3")
-util.PrecacheSound("coach/coach_student_died.mp3")
+util.PrecacheSound("coach/coach_attack_here.wav")
+util.PrecacheSound("coach/coach_defend_here.wav")
+util.PrecacheSound("coach/coach_go_here.wav")
+util.PrecacheSound("coach/coach_look_here.wav")
+util.PrecacheSound("coach/coach_student_died.wav")
 util.PrecacheSound("misc/ks_tier_01.wav")
 util.PrecacheSound("misc/ks_tier_01_death.wav")
 util.PrecacheSound("misc/ks_tier_01_kill_01.wav")
@@ -394,7 +394,7 @@ local drawTimer = function()
 	if convertTime(60*(state == STATE_LASTREQUEST and 3 or 10) - (CurTime() - JB.RoundStartTime)) == "0 : 30" then --not a good way to do this but still
 		if thirtysecleft == false then
 			thirtysecleft = true;
-			--LocalPlayer():SendNotification("30 seconds remaining!")
+			notification.AddLegacy("30 seconds remaining!",NOTICE_GENERIC);
 			surface.PlaySound( "otterjailbreak/lc_30secleft.mp3" )
 		end
 	end

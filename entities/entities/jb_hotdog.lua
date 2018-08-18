@@ -57,7 +57,7 @@ function ENT:Use(p)
 	
 		p:SetHealth(p:Health()+15)
 		
-		p:SendNotification("Nom-nom!");
+		p:SendQuickNotification("You ate a hot dog!");
 		
 		self:Remove();
 	elseif IsValid(p) then
