@@ -112,11 +112,9 @@ function JB:Mapvote_ExtendCurrentMap() 		// You can call this from your own admi
 	end);
 end
 function JB:Mapvote_StartMapVote()			// You can call this from your admin mod/mapvote to initiate a mapvote.
-	if hook.Call("JailBreakStartMapvote",JB.Gamemode,JB.RoundsPassed,ententionsDone) then
-		JB.State = STATE_MAPVOTE;
-		return true;
-	end
-	return false;
+	MapVote.Start()
+	JB.State = STATE_MAPVOTE;
+	return true;
 end
 
 /*
@@ -306,10 +304,10 @@ function JB:NewRound(rounds_passed)
 		timer.Simple(1,function()
 			JB.Util.iterate(player.GetAll()):Freeze(false);
 		end)
-
 		net.Start("JB.SendRoundUpdate"); net.WriteInt(STATE_SETUP,8); net.WriteInt(rounds_passed,32); net.Broadcast();
 	elseif CLIENT and IsValid(LocalPlayer()) then
 		notification.AddLegacy("Round "..rounds_passed,NOTIFY_GENERIC);
+		print("state "..LocalPlayer():GetNWInt("killstreak"))
 		if LocalPlayer():Team() == 1 then
 			surface.PlaySound( "otterjailbreak/lc_spawndragon.mp3" )
 		elseif LocalPlayer():Team() == 2 then
@@ -414,7 +412,7 @@ hook.Add("InitPostEntity","JB.InitPostEntity.SpawnStateTransmit",function()
 				notification.AddLegacy("The round will start once everyone had a chance to join",NOTIFY_GENERIC);
 			elseif JB.State == STATE_PLAYING or JB.State == STATE_LASTREQUEST then
 				notification.AddLegacy("A round is currently in progress",NOTIFY_GENERIC);
-				notification.AddLegacy("You will spawn when the current ends",NOTIFY_GENERIC);
+				notification.AddLegacy("You will spawn when the current round ends",NOTIFY_GENERIC);
 			elseif JB.State == STATE_MAPVOTE then
 				notification.AddLegacy("A mapvote is currently in progress",NOTIFY_GENERIC);
 			end

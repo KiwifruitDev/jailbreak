@@ -117,6 +117,8 @@ function JB:DamageLog_AddPlayerDeath(p, weapon, killer)
 	local message={};
 
 	local subject=p;
+	print(killer:GetNWInt("killstreak"))
+	print(killer:Nick().." has a killstreak of "..p:GetNWInt("killstreak"))
 
 	if p:Team() == 1 then --death sfx
 		p:EmitSound("/misc/ks_tier_01_death.wav")
@@ -135,6 +137,7 @@ function JB:DamageLog_AddPlayerDeath(p, weapon, killer)
 		if killer == p then
 			table.insert(message," has commited suicide")
 		else
+			killer:SetNWInt("killstreak", (killer:GetNWInt("killstreak")+1)) --killstreaks
 			--killer:EmitSound("/misc/ks_tier_01.wav")
 			table.insert(message," was killed by ")
 			table.insert(message,team.GetColor(killer:Team()));

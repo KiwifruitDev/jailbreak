@@ -33,7 +33,7 @@
 JB.Gamemode.PlayerInitialSpawn = function(gm,ply)
 	ply:SetTeam(TEAM_PRISONER) -- always spawn as prisoner;
 	JB:DebugPrint(ply:Nick().." has successfully joined the server.");
-	ply:ConCommand("snd_restart") --if they join the server with the content addon, their sound may not work properly
+	--ply:ConCommand("snd_restart") --if they join the server with the content addon, their sound may not work properly
 end;
 
 JB.Gamemode.PlayerSpawn = function(gm,ply)
@@ -50,7 +50,7 @@ JB.Gamemode.PlayerSpawn = function(gm,ply)
 	ply:StripAmmo();
 
 	gm.BaseClass.PlayerSpawn(gm,ply);
-
+	ply:SetNWInt("killstreak",0) --ffs get rid of your killstreak
 	ply.originalRunSpeed = ply:GetRunSpeed();
 end;
 

@@ -38,7 +38,7 @@ local function claimWarden(p,c,a)
 		p:SendQuickNotification("You have to give others a chance to claim warden.");
 		return;
 	end
-
+	p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_spawncount.mp3" ))
 	p:AddWardenStatus();
 
 	if not p.wardenRounds then

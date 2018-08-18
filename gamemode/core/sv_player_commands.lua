@@ -59,16 +59,41 @@ JB.Util.addChatCommand("drop",drop);
 local bc = function( ply, cmd, args )
 	if(ply:IsAdmin()) then
 		JB:BroadcastNotification(table.concat(args, " "));
-		if table.concat(args, " ") == "gravity gun" then
-		print("gravity gun")
-			for _,ply in ipairs( player.GetAll() ) do
-				ply:Give("weapon_physcannon")
-			end		
-		end
 	end
 end
 concommand.Add("jb_broadcast", bc)
 JB.Util.addChatCommand("broadcast",bc);
+
+local setks = function( ply, cmd, args )
+	if(ply:IsAdmin()) then
+		ply:SetNWInt("killstreak", (ply:GetNWInt("killstreak")+1))
+	end
+end
+concommand.Add("jb_addks", setks)
+JB.Util.addChatCommand("addks",setks);
+
+local setks2 = function( ply, cmd, args )
+	if(ply:IsAdmin()) then
+		ply:SetNWInt("killstreak", 0)
+	end
+end
+concommand.Add("jb_resetks", setks2)
+JB.Util.addChatCommand("resetks",setks2);
+
+local fc = function( ply, cmd, args )
+	if(ply:IsAdmin()) then
+		if #team.GetPlayers(TEAM_GUARD) >= 1 and #team.GetPlayers(TEAM_PRISONER) >= 1 then
+			if SERVER then
+				game.ConsoleCommand("sv_gravity 600;\n")
+				game.ConsoleCommand("sv_friction 8;\n")
+			end
+			JB:DebugPrint(ply:Nick().." has forcibly ended the round!")
+			JB:EndRound();
+		end
+	end
+end
+concommand.Add("jb_forceround", fc)
+JB.Util.addChatCommand("forceround",fc);
 
 local pickup = function(p)
 	local e = p:GetEyeTrace().Entity

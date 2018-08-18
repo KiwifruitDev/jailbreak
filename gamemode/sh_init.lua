@@ -45,7 +45,7 @@ config.font = makeConfig("jb_config_font","Roboto")
 config.website = makeConfig("jb_config_website","hi there");
 config.maxWardenItems = makeConfig("jb_config_max_warden_items","20");
 config.maxWardenRounds = makeConfig("jb_config_max_warden_rounds","3");
-config.joinTime = makeConfig("jb_config_jointime","20"); 
+config.joinTime = makeConfig("jb_config_jointime","0"); 
 config.setupTime = makeConfig("jb_config_setuptime","60"); 
 config.guardsAllowed = makeConfig("jb_config_guards_allowed","30");
 config.rebelSensitivity = makeConfig("jb_config_rebel_sensitivity","2");
@@ -54,7 +54,7 @@ config.prisonerNameChange = makeConfig("jb_config_prisoners_namechange","0");
 config.wardenControl = makeConfig("jb_config_warden_control_enabled","1");
 config.prisonerSpecialChance = makeConfig("jb_config_prisoner_special_chance","10");
 config.knivesAreConcealed = makeConfig("jb_config_knives_are_concealed","1");
-config.roundsPerMap = makeConfig("jb_config_rounds_per_map","15`");
+config.roundsPerMap = makeConfig("jb_config_rounds_per_map","15");
 config.notifyLG = makeConfig("jb_config_notify_lastguard",1);
 
 -- meta stuff

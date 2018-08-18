@@ -102,6 +102,36 @@ local matHint = Material("materials/jailbreak_excl/pointers/pointer_background.p
 local matQuestion = Material("materials/jailbreak_excl/pointers/question.png");
 local matRestricted = Material("materials/jailbreak_excl/hud_restricted.png")
 
+// PRECACHING SOUNDS
+--RunConsoleCommand("snd_restart","")
+util.PrecacheSound("coach/coach_attack_here.mp3")
+util.PrecacheSound("coach/coach_defend_here.mp3")
+util.PrecacheSound("coach/coach_go_here.mp3")
+util.PrecacheSound("coach/coach_look_here.mp3")
+util.PrecacheSound("coach/coach_student_died.mp3")
+util.PrecacheSound("misc/ks_tier_01.wav")
+util.PrecacheSound("misc/ks_tier_01_death.wav")
+util.PrecacheSound("misc/ks_tier_01_kill_01.wav")
+util.PrecacheSound("misc/ks_tier_02.wav")
+util.PrecacheSound("misc/ks_tier_02_kill_01.wav")
+util.PrecacheSound("misc/ks_tier_02_kill_02.wav")
+util.PrecacheSound("misc/ks_tier_03.wav")
+util.PrecacheSound("misc/ks_tier_03_death.wav")
+util.PrecacheSound("misc/ks_tier_03_kill_01.wav")
+util.PrecacheSound("misc/ks_tier_04.wav")
+util.PrecacheSound("misc/ks_tier_04_death.wav")
+util.PrecacheSound("misc/ks_tier_04_kill_01.wav")
+util.PrecacheSound("otterjailbreak/lc_30secleft.mp3")
+util.PrecacheSound("otterjailbreak/lc_dragonwin.mp3")
+util.PrecacheSound("otterjailbreak/lc_ghost01.mp3")
+util.PrecacheSound("otterjailbreak/lc_ghost02.mp3")
+util.PrecacheSound("otterjailbreak/lc_ghost03.mp3")
+util.PrecacheSound("otterjailbreak/lc_ghost04.mp3")
+util.PrecacheSound("otterjailbreak/lc_knightwin.mp3")
+util.PrecacheSound("otterjailbreak/lc_spawnbaron.mp3")
+util.PrecacheSound("otterjailbreak/lc_spawncount.mp3")
+util.PrecacheSound("otterjailbreak/lc_spawndragon.mp3")
+
 // COLORS
 local color_marker = Color(255,255,255,0);
 local color_marker_dark = Color(0,0,0,0);
@@ -138,6 +168,7 @@ vgui.Register("JBHUDWardenFrame",{
 },"Panel");
 hook.Add("Think","JB.Think.PredictWardenFrame",function()
 	if IsValid(warden) and (not IsValid(JB:GetWarden()) or warden.Player ~= JB:GetWarden()) then
+		warden:SetSize(0,0);
 		warden:Remove();
 		warden=nil;
 		print("removed warden")
@@ -148,6 +179,49 @@ hook.Add("Think","JB.Think.PredictWardenFrame",function()
 		warden:SetPlayer(JB:GetWarden());
 		print("new warden")
 		notification.AddLegacy(warden.Player:Nick().." is the warden",NOTICE_GENERIC);
+	end
+end);
+
+// KILLSTREAK PANEL
+local ks;
+vgui.Register("JBHUDKillstreakFrame",{
+	Init = function(self)
+		self:SetSize(256,256);
+		self:SetPos(0,ScrH() - 175);
+
+	end,
+	PaintOver = function(self,w,h)
+		setDrawColor(JB.Color.white);
+		setMaterial(matHint);
+		drawTexturedRect(0,0,170,170);
+
+		if IsValid(LocalPlayer()) then
+			//draw.SimpleText(self.Player:Nick(),"JBNormalShadow",62,h/2,JB.Color.black,0,1);
+			if LocalPlayer():GetNWInt("killstreak") >= 10 then
+				drawSimpleShadowText(LocalPlayer():GetNWInt("killstreak"),"JBExtraLarge",85,70,JB.Color.white,1,1);
+			else
+				drawSimpleShadowText(LocalPlayer():GetNWInt("killstreak"),"JBExtraLarge",85,70,JB.Color.white,1,1);
+			end
+			drawSimpleShadowText("Killstreak","JBNormal",85,100,JB.Color.white,1,1);
+		end
+	end,
+},"Panel");
+hook.Add("Think","JB.Think.PredictKillstreakFrame",function()
+	ply = LocalPlayer();
+	if not IsValid(ply) then return end
+	if not ply:Alive() then return end
+	--print(ply:GetNWInt("killstreak"))
+	if IsValid(ks) and ply:GetNWInt("killstreak") <= 0 then
+		ks:SetSize(0,0);
+		ks:Remove();
+		ks=nil;
+		print("removed ks")
+	end
+
+	if ply:GetNWInt("killstreak") >= 1 and not IsValid(ks) then
+		ks=vgui.Create("JBHUDKillstreakFrame");
+		ks:SetPlayer(JB:GetWarden());
+		print("new ks")
 	end
 end);
 

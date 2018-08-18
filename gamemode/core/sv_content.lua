@@ -33,7 +33,7 @@
 
 -- Now with workshop support :)
 resource.AddWorkshop("389805614");
-resource.AddWorkshop("1479494465");
+resource.AddWorkshop("1479494465"); --my addon with sfx
 
 --[[ If the workshop fails, the files below will be downloaded from the server :)
 resource.AddFile("materials/jailbreak_excl/notify_bracket.png");
