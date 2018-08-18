@@ -38,7 +38,9 @@ local function claimWarden(p,c,a)
 		p:SendQuickNotification("You have to give others a chance to claim warden.");
 		return;
 	end
-	p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_spawncount.mp3" ))
+	for _,ply in ipairs( player.GetAll() ) do
+		ply:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_spawncount.mp3" ))
+	end
 	p:AddWardenStatus();
 
 	if not p.wardenRounds then
@@ -113,6 +115,8 @@ concommand.Add("jb_warden_spawn",function(p,c,a)
 	
 	if not opt then 
 		return
+	elseif opt == "HotDog" then
+		spawnProp(p,"jb_hotdog")
 	elseif opt == "Crate" then
 		spawnProp(p,"prop_physics_multiplayer","models/props_junk/wood_crate001a.mdl")
 	elseif opt == "Blockade" then

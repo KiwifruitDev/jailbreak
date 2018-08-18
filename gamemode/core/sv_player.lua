@@ -94,7 +94,21 @@ JB.Gamemode.IsSpawnpointSuitable = function()
 end
 
 JB.Gamemode.PlayerDeath = function(gm, victim, weapon, killer)
-	victim:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+	if victim:Team() == 1 then --death sfx
+		victim:EmitSound("/misc/ks_tier_01_death.wav")
+	elseif victim.GetWarden and victim:GetWarden() then
+		victim:EmitSound("/misc/ks_tier_04_death.wav")
+	else 
+		victim:EmitSound("/misc/ks_tier_03_death.wav")
+	end
+
+	if victim:Team() == 0 and JB:AliveGuards() > 1 then --bg music, shouldn't be activated if it's the end of the round otherwise it will overlay the round end music
+		print(JB:AliveGuards())
+		victim:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+	elseif victim:Team() == 1 and JB:AlivePrisoners() > 1 then 
+		print(JB:AlivePrisoners())
+		victim:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+	end
 	victim:SendNotification("You are muted until the round ends")
 	
 	if victim.GetWarden and IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden() == victim:GetWarden() then
@@ -259,9 +273,26 @@ local painSounds = {
 	"vo/npc/male01/pain08.wav",
 	"vo/npc/male01/pain09.wav"
 }
+local femalePainSounds = {
+	"vo/npc/female01/ow01.wav",
+	"vo/npc/female01/ow02.wav",
+	"vo/npc/female01/pain01.wav",
+	"vo/npc/female01/pain02.wav",
+	"vo/npc/female01/pain03.wav",
+	"vo/npc/female01/pain04.wav",
+	"vo/npc/female01/pain05.wav",
+	"vo/npc/female01/pain06.wav",
+	"vo/npc/female01/pain07.wav",
+	"vo/npc/female01/pain08.wav",
+	"vo/npc/female01/pain09.wav"
+}
+
 hook.Add("EntityTakeDamage", "JB.EntityTakeDamage.SayOuch", function(victim)
-	if IsValid(victim) and victim:IsPlayer() and math.random(1,6) == 1 then
+	local dothemath = math.random(1,6)
+	if IsValid(victim) and victim:IsPlayer() and victim:GetModel():find("/male") and dothemath == 1 then
 		victim:EmitSound(painSounds[math.random(#painSounds)],math.random(100,140),math.random(90,110))
+	elseif IsValid(victim) and victim:IsPlayer() and victim:GetModel():find("/female") and dothemath == 1 then
+		victim:EmitSound(femalePainSounds[math.random(#femalePainSounds)],math.random(100,140),math.random(90,110))
 	end
 end)
 

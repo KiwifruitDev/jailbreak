@@ -142,7 +142,12 @@ local prisonerModels = {
 	Model("models/player/Group01/male_09.mdl"),
 }
 function PLAYER:SetModel()
-	self.Player:SetModel( string.lower(table.Random(prisonerModels)) )
+	print(self.Player._prisonermodel)
+	if self.Player._prisonermodel then --after a rejoin or a map change/server restart, players need to re-equip the pointshop playermodel.
+		self.Player:SetModel(self.Player._prisonermodel)
+	else
+		self.Player:SetModel( string.lower(table.Random(prisonerModels)) )
+	end
 end
 
 player_manager.RegisterClass( "player_prisoner", PLAYER, "player_default" )

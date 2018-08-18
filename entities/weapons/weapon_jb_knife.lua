@@ -91,7 +91,7 @@ function SWEP:PrimaryAttack()
       self.Owner:LagCompensation(true);
    end
 
-   self.Owner:SetAnimation( PLAYER_ATTACK1 )
+   --self.Owner:SetAnimation( PLAYER_ATTACK1 )
 
    local spos = self.Owner:GetShootPos()
    local sdest = spos + (self.Owner:GetAimVector() * 70)
@@ -114,6 +114,7 @@ function SWEP:PrimaryAttack()
    local hitEnt = tr_main.Entity
 
    self.Weapon:EmitSound(sound_single)
+   self.Owner:SetAnimation( PLAYER_ATTACK1 )
 
    if IsValid(hitEnt) or tr_main.HitWorld then
       self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )

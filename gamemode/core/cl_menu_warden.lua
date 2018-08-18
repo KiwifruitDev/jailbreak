@@ -83,9 +83,8 @@ function JB.MENU_WARDEN()
 		end
 		
 		
-		addButton(false,"Scriptdays",function() RunConsoleCommand("jb_warden_spawn","AmmoBox") end);
+		addButton(false,"Scriptdays (Coming soon!)",function() return true end);
 		addButton(tostring(IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden_PVPDamage()),"Friendlyfire for prisoners",function() RunConsoleCommand("jb_warden_changecontrol","PVP",tostring(not (IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden_PVPDamage()))) end);
-		addButton(tostring(IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden_PVPDamage()),"Friendlyfire for guards",function() RunConsoleCommand("jb_warden_changecontrol","PVPGuards",tostring(not (IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden_PVPDamage()))) end);
 		addButton(tostring(IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden_ItemPickup()),"Item pickup",function() RunConsoleCommand("jb_warden_changecontrol","Pickup",tostring(not (IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden_ItemPickup()))); end);
 		
 		yBottom = yBottom+16;
@@ -100,6 +99,7 @@ function JB.MENU_WARDEN()
 		addButton(false,"Spawn ammo box",function() RunConsoleCommand("jb_warden_spawn","AmmoBox") end);
 		addButton(false,"Spawn breakable crate",function() RunConsoleCommand("jb_warden_spawn","Crate") end);
 		addButton(false,"Spawn blockade",function() RunConsoleCommand("jb_warden_spawn","Blockade") end);
+		addButton(false,"Spawn hotdog",function() RunConsoleCommand("jb_warden_spawn","HotDog") end);
 		
 		
 		frame:SetTall(yBottom+15);

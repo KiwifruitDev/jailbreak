@@ -50,8 +50,8 @@ PLAYER.DropWeaponOnDie		= true
 PLAYER.AvoidPlayers			= false
 
 function PLAYER:Spawn()
-	self.Player:SetPlayerColor(Vector(.6,.9,1));
-	self.Player:SetWeaponColor(Vector(.6,.9,1));
+	self.Player:SetPlayerColor(Vector(0,0,1));
+	self.Player:SetWeaponColor(Vector(0,0,1));
 end
 
 local randomGuardSidearms = {"weapon_jb_deagle","weapon_jb_usp","weapon_jb_fiveseven"};

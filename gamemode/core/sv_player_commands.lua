@@ -80,6 +80,14 @@ end
 concommand.Add("jb_resetks", setks2)
 JB.Util.addChatCommand("resetks",setks2);
 
+local givewep = function( ply, cmd, args )
+	if(ply:IsAdmin()) then
+		ply:Give(table.concat(args, " "))
+	end
+end
+concommand.Add("jb_give", givewep)
+JB.Util.addChatCommand("give",givewep);
+
 local fc = function( ply, cmd, args )
 	if(ply:IsAdmin()) then
 		if #team.GetPlayers(TEAM_GUARD) >= 1 and #team.GetPlayers(TEAM_PRISONER) >= 1 then
@@ -115,10 +123,11 @@ local function teamSwitch(p,cmd)
 	if !IsValid(p) then return end
 
 	if cmd == "jb_team_select_guard" and JB:GetGuardsAllowed() > #team.GetPlayers(TEAM_GUARD) and p:Team() ~= TEAM_GUARD then
-		p:SetTeam(TEAM_GUARD);
-		if p:Alive() then
+		if p:Alive() and JB:AlivePrisoners() > 1 then
+			print(JB:AlivePrisoners())
 			p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
 		end
+		p:SetTeam(TEAM_GUARD);
 		p:KillSilent();
 		p:SendNotification("Switched to guards");
 
@@ -127,10 +136,11 @@ local function teamSwitch(p,cmd)
 		p:SetFrags(0);
 		p:SetDeaths(0);
 	elseif cmd == "jb_team_select_prisoner" and p:Team() ~= TEAM_PRISONER then
-		p:SetTeam(TEAM_PRISONER);
-		if p:Alive() then
+		print(JB:AliveGuards())
+		if p:Alive() and JB:AliveGuards() > 1 then
 			p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
 		end
+		p:SetTeam(TEAM_PRISONER);
 		p:KillSilent();
 		p:SendNotification("Switched to prisoners");
 
