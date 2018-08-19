@@ -117,7 +117,9 @@ JB.Gamemode.PlayerDeath = function(gm, victim, weapon, killer)
 		victim:EmitSound("/misc/ks_tier_03_death.wav")
 	end
 
-	if JB.State ~= 1 and JB.State ~= 5 and JB.State ~= 6 and (victim:Team() == 0 and JB:AliveGuards() > 1 or victim:Team() == 1 and JB:AlivePrisoners() > 1) then --bg music, shouldn't be activated if it's the end of the round otherwise it will overlay the round end music
+	if victim:Team() == 0 and JB:AliveGuards() > 1 then --bg music, shouldn't be activated if it's the end of the round otherwise it will overlay the round end music
+		victim:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+	elseif victim:Team() == 1 and JB:AlivePrisoners() > 1 then --bg music, shouldn't be activated if it's the end of the round otherwise it will overlay the round end music
 		victim:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
 	end
 	if victim:GetNWInt("killstreak") >= 4 and killer ~= victim and killer:Alive() then

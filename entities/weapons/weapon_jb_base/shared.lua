@@ -205,8 +205,11 @@ function SWEP:Reload()
 	self:SetNextPrimaryFire(CurTime()+dur);
 	timer.Create(self.Owner:SteamID().."ReloadTimer", dur,1,function()
 		if not self or not IsValid(self) or not self.Owner or not IsValid(self.Owner) then return end
-
-		amt = math.Clamp(self.Owner:GetAmmoCount(self.Primary.Ammo),0,self.Primary.ClipSize);
+		if self.Owner:GetNWString("powerup") == "gunpunt" then
+			amt = math.Clamp(self.Owner:GetAmmoCount(self.Primary.Ammo),0,(self.Primary.ClipSize/2));
+		else
+			amt = math.Clamp(self.Owner:GetAmmoCount(self.Primary.Ammo),0,self.Primary.ClipSize);
+		end
 		self.Owner:RemoveAmmo(amt,self.Primary.Ammo);
 
 		if not self.Rechamber then
@@ -347,6 +350,9 @@ function SWEP:PrimaryAttack()
 
 	if SERVER then
 		self.Owner:EmitSound(self.Primary.Sound, 100, math.random(95, 105))
+		if self.Owner:GetNWString("powerup") == "gunpunt" and self:Clip1() <= (self.Primary.ClipSize/2) then --punting should only be allowed once your clip size is appropriate
+			self.Owner:SetVelocity( self.Owner:GetAimVector() * -150 )
+		end
 	end
 
 	self:TakePrimaryAmmo(1);
