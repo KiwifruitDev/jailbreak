@@ -1,4 +1,4 @@
-# Just An Otter Jail Break 7 Fork
+# Just an otter JailBreak 7 fork
 
 ## Developers
 
