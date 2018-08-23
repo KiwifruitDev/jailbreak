@@ -1,32 +1,72 @@
-# Jail Break 7
-
-## Configuration
-
-The following convars can be put in your `./cfg/server.cfg` file.
-It is recommended to not put convars in your config file unless you know exactly what the effect is the convar is. Invalid values may break the gamemode.
-
-Convar                                     | Effect
--------------------------------------------|----------------------------------------------------------------------------------
-`jb_config_debug 1/0`                      | Debug mode, you might want to set this to 0 to reduce annoying console messages 
-`jb_config_font Roboto`                  | The gamemode's font. I disrecommend changing this; may cause everything to go weird!
-`jb_config_website example.com`            | The URL of your website. This URL will be displayed as a form of advertising your site.
-`jb_config_jointime 20` [minimum: 10]      | (seconds) period when the map just loaded and people are given a chance to join.
-`jb_config_setuptime 60` [minimum: 10]     | (seconds) period at the start of the round when guards may claim warden.
-`jb_config_guards_allowed 30` [minimum: 1] | Percentage of players allowed to be guard
-`jb_config_guards_playtime 120`            | (minutes) playtime required to be guard (admins bypass this)
-`jb_config_rebel_sensitivity 0-2`          | 2 = prisoner becomes rebel on killing a guard, 1 = prisoner becomes rebel on damaging a guard, 0 = prisoner never becomes rebel.
-`jb_config_prisoners_namechange 1/0`       | 1 = use fake names for prisoners (ex. Prisoner 192346), 0 = use normal nicknames for prisoners
-`jb_config_warden_control_enabled 1/0`     | Toggles whether warden control should be enabled or not. (recommended: always 1);
-`jb_config_prisoner_special_chance 8`        | Chance a prisoner will get a random weapon. Chance = random(1,var)==1;
-`jb_config_max_warden_rounds 3`              | Maximum amount of rounds a player can be warden in a row. 
-`jb_config_knives_are_concealed 1`           | Conceal knives - they won't draw on the player's tigh if this is set to 1.
-`jb_config_rounds_per_map 10`                 | Rounds until mapvote - ONLY SET THIS IF YOU HAVE A MAPVOTE SYSTEM ON YOUR SERVER/COMMUNITY
-`jb_config_notify_lastguard 1/0`           | Send the "last guard kills all" notification
+# Just An Otter Jail Break 7 Fork
 
 ## Developers
 
+### Pointshop support 
+Pointshop support was added to support various powerups and models. ``[ply]`` refers to a player entity.
+
+To set a model, add the model string to ``[ply]._prisonermodel`` for a prisoners-only model, or ``[ply]._guardmodel`` for a guards-only model.
+
+The power-ups can be set by setting ``[ply]:SetNWString("powerup",[powerupstring])``, with ``[powerupstring]`` being the string for the selected power-up. The following power-ups are:
+
+* "gunpunt"
+	* Enables the 'Weapon Punt' power-up, which is activated once the player's current weapon clip has reached half it's amount, however their clip size is halved after reloading.
+	
+Here is an example power-up lua file:
+```lua
+	ITEM.Name = 'Weapon Punt'
+	ITEM.Price = 500
+	ITEM.Model = 'models/items/boxsrounds.mdl'
+	ITEM.Description = "Shooting will punt you backwards, use wisely!\nActivated once your clip has reached half it's amount.\nCons: Your clip size is halved after reloading."
+	ITEM.NoPreview = true
+
+	function ITEM:OnEquip(ply, modifications)
+		ply:SetNWString("powerup","gunpunt")
+	end
+
+	function ITEM:OnHolster(ply)
+		ply:SetNWString("powerup","")
+	end
+```
+And an example playermodel lua file:
+```lua
+	ITEM.Name = 'Combine Prison Guard'
+	ITEM.Price = 300
+	ITEM.Model = 'models/player/combine_soldier_prisonguard.mdl'
+	ITEM.Team = TEAM_GUARD
+
+	function ITEM:OnEquip(ply, modifications)
+		timer.Simple(1, function()
+			ply._guardmodel = self.Model
+			if ply:Team() == self.Team then
+				ply:SetModel(self.Model)
+			end 
+		end)
+	end
+
+	function ITEM:OnHolster(ply)
+		ply._guardmodel = nil
+		if ply:Team() == self.Team then
+			print(self.Player._guardmodel)
+			if self.Player._guardmodel then
+				self.Player:SetModel(self.Player._guardmodel)
+			else
+				self.Player:SetModel(Model("models/player/Group01/male_09.mdl"))
+			end
+		end
+	end
+
+	function ITEM:PlayerSetModel(ply)
+		ply._guardmodel = self.Model
+		if ply:Team() == self.Team then
+			ply:SetModel(self.Model)
+		end
+	end
+```
+It is recommended that you add support for the ``self.Team`` part in Pointshop itself.
+
 ### Last requests
-This is how last requests are added. LR files have to put put in the lastrequests folder.
+This is how last requests are added. LR files have to put put in the lastrequests folder
 ```lua
 
 	-- Initialize a new LR class
