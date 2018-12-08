@@ -1,6 +1,20 @@
 # Just an otter JailBreak 7 fork
 
 ## Developers
+### Scriptdays
+Scriptdays are scripted free-days that wardens can choose to enable via the warden menu.
+
+![Gang War Day](https://cdn.discordapp.com/attachments/513244749759512581/521099462995738648/gangwarday.png)
+
+To add a scriptday, simply add a line near the end of cl_menu_scriptday.lua (there should already be a scriptday there) stating the following information:
+``createScriptDayEntry("Title","Description","ActivationLine",Material("icon16/star.png"))``
+
+``ActivationLine`` will be used in the second part, and the material line is to be an icon used in the warden menu.
+
+
+After adding that line, add a line to sv_warden.lua under ``concommand.Add("jb_warden_scriptday",function(p,c,a)`` where the ``if (lr == "GangWarDay"`` statement is. Add an ``elseif (lr == "ActivationLine")`` there above the ``end``, from there you are free to add anything at will!
+
+
 
 ### Pointshop support 
 Pointshop support was added to support various powerups and models. ``[ply]`` refers to a player entity.
