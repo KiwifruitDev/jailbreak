@@ -152,10 +152,13 @@ concommand.Add("jb_warden_scriptday",function(p,c,a)
 		for k,v in ipairs(ents.FindByClass("func_movelinear"))do
 			v:Fire("Open",1)
 		end
+		
+		--ADD SCRIPTDAYS HERE AND IN SV_MENU_SCRIPTDAY.LUA--
+
 		if (lr == "GangWarDay") then
 			JB:BroadcastNotification("The warden has initiated Gang War Day!");
 			JB:BroadcastNotification("All prisoners now have grappling hooks!");
-			print("ladies and gentlemen we have a winner")
+			print("Gang War Day has started.")
 			for _,ply in ipairs( player.GetAll() ) do
 				ply:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/gangwarday.wav" ))
 				ply:StripWeapons();

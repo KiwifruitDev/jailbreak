@@ -145,8 +145,9 @@ function JB.MENU_SCRIPTDAYS()
 				dummy:SetSize(self:GetWide(),self:GetTall());
 			end
 		end
-		--SCRIPTDAYS GO HERE AND IN SV_WARDEN--
 		
+		--SCRIPTDAYS GO HERE AND IN SV_WARDEN.LUA--
+
 		createScriptDayEntry("Gang War Day","Prisoners and guards are now the Bloods and Crips. Each team will have grappling hooks, Mac 10s, USPs, and knifes to fight each other with.","GangWarDay",Material("icon16/gun.png"))
 		
 

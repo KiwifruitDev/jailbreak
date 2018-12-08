@@ -97,7 +97,6 @@ JB.Gamemode.IsSpawnpointSuitable = function()
 end
 
 JB.Gamemode.PlayerDeath = function(gm, victim, weapon, killer)
-	print("fluffy")
 	if victim == killer and victim:GetNWInt("killstreak") >=4 then
 		if victim:Team() == 1 then --accounce death sfx for those who have killstreaks
 			for _,ply in ipairs( player.GetAll() ) do
@@ -119,7 +118,6 @@ JB.Gamemode.PlayerDeath = function(gm, victim, weapon, killer)
 	else 
 		victim:EmitSound("/misc/ks_tier_03_death.wav")
 	end
-	print("hai")
 	print(victim:Team().." "..JB:AliveGuards())
 	if victim:Team() == TEAM_GUARD and JB:AliveGuards() > 1 then --bg music, shouldn't be activated if it's the end of the round otherwise it will overlay the round end music
 		victim:SendLua( string.format( "surface.PlaySound( %q )", table.Random( randomGhostSFX ) ))
