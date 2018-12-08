@@ -30,10 +30,12 @@
 -- ##                                                                                ##
 -- ####################################################################################
 
+local randomGhostSFX = {"otterjailbreak/lc_ghost01.mp3","otterjailbreak/lc_ghost02.mp3","otterjailbreak/lc_ghost03.mp3","otterjailbreak/lc_ghost04.mp3"}
 JB.Gamemode.PlayerInitialSpawn = function(gm,ply)
 	ply:SetTeam(TEAM_PRISONER) -- always spawn as prisoner;
 	JB:DebugPrint(ply:Nick().." has successfully joined the server.");
 	--ply:ConCommand("snd_restart") --if they join the server with the content addon, their sound may not work properly
+	ply:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/waitingforplayers.wav"))
 end;
 
 
@@ -95,6 +97,7 @@ JB.Gamemode.IsSpawnpointSuitable = function()
 end
 
 JB.Gamemode.PlayerDeath = function(gm, victim, weapon, killer)
+	print("fluffy")
 	if victim == killer and victim:GetNWInt("killstreak") >=4 then
 		if victim:Team() == 1 then --accounce death sfx for those who have killstreaks
 			for _,ply in ipairs( player.GetAll() ) do
@@ -116,11 +119,12 @@ JB.Gamemode.PlayerDeath = function(gm, victim, weapon, killer)
 	else 
 		victim:EmitSound("/misc/ks_tier_03_death.wav")
 	end
-
-	if victim:Team() == 0 and JB:AliveGuards() > 1 then --bg music, shouldn't be activated if it's the end of the round otherwise it will overlay the round end music
-		victim:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
-	elseif victim:Team() == 1 and JB:AlivePrisoners() > 1 then --bg music, shouldn't be activated if it's the end of the round otherwise it will overlay the round end music
-		victim:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+	print("hai")
+	print(victim:Team().." "..JB:AliveGuards())
+	if victim:Team() == TEAM_GUARD and JB:AliveGuards() > 1 then --bg music, shouldn't be activated if it's the end of the round otherwise it will overlay the round end music
+		victim:SendLua( string.format( "surface.PlaySound( %q )", table.Random( randomGhostSFX ) ))
+	elseif victim:Team() == TEAM_PRISONER and JB:AlivePrisoners() > 1 then --bg music, shouldn't be activated if it's the end of the round otherwise it will overlay the round end music
+		victim:SendLua( string.format( "surface.PlaySound( %q )", table.Random( randomGhostSFX ) ))
 	end
 	if victim:GetNWInt("killstreak") >= 4 and killer ~= victim and killer:Alive() then
 		JB:BroadcastNotification(string.upper(killer:Nick()).." ENDED "..string.upper(victim:Nick()).."'s KILLSTREAK OF "..victim:GetNWInt("killstreak").."!");
@@ -174,12 +178,12 @@ JB.Gamemode.PlayerDeath = function(gm, victim, weapon, killer)
 			ply:SendLua( string.format( "surface.PlaySound( %q )", "/misc/ks_tier_04_kill_01.wav" ))
 		end
 	end
-	if IsValid(killer) and killer:Alive() then
+	if IsValid(killer) then
 		JB:DebugPrint(killer:Nick().." has a killstreak of "..killer:GetNWInt("killstreak"))
 	end
 	victim:SendNotification("You are muted until the round ends")
 	
-	if victim.GetWarden and IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden() == victim:GetWarden() then
+	if victim.GetWarden and IsValid(JB.TRANSMITTER) and victim:GetWarden() then
 		JB:BroadcastNotification("The warden has died")
 		timer.Simple(.5,function()
 			for k,v in pairs(team.GetPlayers(TEAM_GUARD))do

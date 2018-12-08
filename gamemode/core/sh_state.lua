@@ -155,38 +155,6 @@ end
 
 if SERVER then
 	JB.SpecialDays = {
-		["Low-Gravity Knife Party"] = function()
-			game.ConsoleCommand("sv_gravity 200;\n")
-			game.ConsoleCommand("sv_friction 3;\n")
-
-			for k,v in ipairs(team.GetPlayers(TEAM_PRISONER))do
-				v:SetJumpPower(400)
-				v:StripWeapons()
-				v:Give("weapon_jb_knife")
-			end
-
-			for k,v in ipairs(team.GetPlayers(TEAM_GUARD))do
-				v:SetJumpPower(400)
-				v:StripWeapons()
-				v:Give("weapon_jb_knife")
-			end
-
-			for k,v in ipairs(ents.GetAll())do
-				if IsValid(v) and v.GetClass and string.Left(v:GetClass(),string.len("weapon_jb_")) == "weapon_jb_" and v:GetClass() ~= "weapon_jb_knife" then
-					v:Remove()
-				end
-			end
-
-			for k,v in ipairs(ents.FindByClass("func_door"))do
-				v:Fire("Open",1)
-			end
-			for k,v in ipairs(ents.FindByClass("func_door_rotating"))do
-				v:Fire("Open",1)
-			end
-			for k,v in ipairs(ents.FindByClass("func_movelinear"))do
-				v:Fire("Open",1)
-			end
-		end,
 		["Guns for everyone"] = function()
 			for k,v in ipairs(team.GetPlayers(TEAM_PRISONER))do
 				v:Give("weapon_jb_deagle")
@@ -253,7 +221,9 @@ function JB:NewRound(rounds_passed)
 
 	if SERVER then
 		game.CleanUpMap();
-
+		if IsValid(JB.TRANSMITTER) then
+			JB.TRANSMITTER:SetJBScriptday("")
+		end
 		rounds_passed = rounds_passed + 1;
 		JB.RoundsPassed = rounds_passed;
 		JB.RoundStartTime = CurTime();
@@ -292,7 +262,6 @@ function JB:NewRound(rounds_passed)
 
 		if IsValid(JB.TRANSMITTER) then
 			JB.TRANSMITTER:SetJBWarden_PVPDamage(false);
-			JB.TRANSMITTER:SetJBWarden_PVPDamageGuards(false);
 			JB.TRANSMITTER:SetJBWarden_ItemPickup(false);
 			JB.TRANSMITTER:SetJBWarden_PointerType("0");
 			JB.TRANSMITTER:SetJBWarden(NULL);
@@ -350,7 +319,11 @@ function JB:EndRound(winner)
 				surface.PlaySound( "music/trombonetauntv2.mp3" )
 			end
 		end
-		notification.AddLegacy(winner == TEAM_PRISONER and "Prisoners win" or winner == TEAM_GUARD and "Guards win" or "Draw",NOTIFY_GENERIC);
+		if (JB.TRANSMITTER:GetJBScriptday() == "GangWarDay") then
+			notification.AddLegacy(winner == TEAM_PRISONER and "Bloods win" or winner == TEAM_GUARD and "Crips win" or "Draw",NOTIFY_GENERIC);
+		else
+			notification.AddLegacy(winner == TEAM_PRISONER and "Prisoners win" or winner == TEAM_GUARD and "Guards win" or "Draw",NOTIFY_GENERIC);
+		end
 	end
 
 	hook.Call("JailBreakRoundEnd",JB.Gamemode,JB.RoundsPassed);

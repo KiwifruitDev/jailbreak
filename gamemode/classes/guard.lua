@@ -57,8 +57,22 @@ end
 local randomGuardSidearms = {"weapon_jb_deagle","weapon_jb_usp","weapon_jb_fiveseven"};
 local randomGuardPrimary = {"weapon_jb_ak47","weapon_jb_aug","weapon_jb_galil","weapon_jb_m4a1","weapon_jb_mac10","weapon_jb_mp5navy","weapon_jb_p90","weapon_jb_scout","weapon_jb_sg552","weapon_jb_ump"};
 function PLAYER:Loadout()
+    local grapple = ents.Create( "sent_grapplehook_bpack" )
+    grapple:SetSlotName( "sent_grapplehook_bpack" )
+    grapple:Spawn()
+	grapple:SetKey( 36 )
+	print(grapple:GetKey().." 36")
+    if not grapple:Attach( self.Player, true ) then
+		print("removed grappling hook")
+        grapple:Remove()
+        return
+	end
 	self.Player:Give("weapon_jb_fists");
-
+	if self.Player.GetNWString("guardweapon") then
+		print(self.Player.GetNWString("guardweapon","None"))
+		self.Player:Give(self.Player.GetNWString("guardweapon"));
+		self.Player:GiveAmmo( self.Player.GetNWInt("guardammo"), self.Player.GetNWString("guardammotype"), true )
+	end
 	--self.Player:Give( table.Random( randomGuardSidearms ) )
 	--self.Player:Give( table.Random( randomGuardPrimary ) );
 	self.Player:GiveAmmo( 255, "Pistol", true )
@@ -72,7 +86,12 @@ end
 
 util.PrecacheModel( "models/player/police.mdl" )
 function PLAYER:SetModel()
-	self.Player:SetModel( "models/player/police.mdl" )
+	print(self.Player._guardmodel)
+	if self.Player._guardmodel then --after a rejoin or a map change/server restart, players need to re-equip the pointshop playermodel.
+		self.Player:SetModel(self.Player._guardmodel)
+	else
+		self.Player:SetModel( "models/player/police.mdl" )
+	end
 end
 
 

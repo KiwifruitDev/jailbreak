@@ -39,10 +39,10 @@ ENT.PrintName 			="JB State Transmitter"
 function ENT:Initialize()
 	JB.TRANSMITTER = self;
 	JB:DebugPrint("Setup State Transmitter!");
-	//self:SetPredictable(true);
+	--self:SetPredictable(true);
 end
 function ENT:Think()
-	if not IsValid(JB.TRANSMITTER) and IsValid(self) then // there is no registered transmitter and yet we're here. What's going on? Let's assume that we are the transmitter that is being looked for.
+	if not IsValid(JB.TRANSMITTER) and IsValid(self) then --there is no registered transmitter and yet we're here. What's going on? Let's assume that we are the transmitter that is being looked for.
 		JB.TRANSMITTER = self;
 	end
 end
@@ -54,7 +54,8 @@ function ENT:SetupDataTables()
 
 	self:NetworkVar( "String", 0, "JBLastRequestPicked" );
 	self:NetworkVar( "String", 1, "JBWarden_PointerType");
-		
+	self:NetworkVar( "String", 2, "JBScriptday" );
+
 	self:NetworkVar( "Float", 0, "JBRoundStartTime" );
 		
 	self:NetworkVar( "Entity", 0, "JBLastRequestPrisoner" );
@@ -62,12 +63,12 @@ function ENT:SetupDataTables()
 	self:NetworkVar( "Entity", 2, "JBWarden" );
 
 	self:NetworkVar ( "Bool", 0, "JBWarden_PVPDamage");
-	self:NetworkVar ( "Bool", 0, "JBWarden_PVPDamageGuards");
 	self:NetworkVar ( "Bool", 1, "JBWarden_ItemPickup");
 		
 	if ( SERVER ) then
 		self:SetJBRoundStartTime(0);
 		self:SetJBState(STATE_IDLE);
+		self:SetJBScriptday("");
 		self:SetJBRoundsPassed(0);
 		self:SetJBWarden_PointerType("0");
 		self:SetJBWarden_PointerPos(Vector(0,0,0));

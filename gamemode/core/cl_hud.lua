@@ -121,6 +121,7 @@ util.PrecacheSound("misc/ks_tier_03_kill_01.wav")
 util.PrecacheSound("misc/ks_tier_04.wav")
 util.PrecacheSound("misc/ks_tier_04_death.wav")
 util.PrecacheSound("misc/ks_tier_04_kill_01.wav")
+util.PrecacheSound("otterjailbreak/gangwarday.wav") 
 util.PrecacheSound("otterjailbreak/lc_30secleft.mp3")
 util.PrecacheSound("otterjailbreak/lc_dragonwin.mp3")
 util.PrecacheSound("otterjailbreak/lc_ghost01.mp3")
@@ -131,6 +132,7 @@ util.PrecacheSound("otterjailbreak/lc_knightwin.mp3")
 util.PrecacheSound("otterjailbreak/lc_spawnbaron.mp3")
 util.PrecacheSound("otterjailbreak/lc_spawncount.mp3")
 util.PrecacheSound("otterjailbreak/lc_spawndragon.mp3")
+
 
 // COLORS
 local color_marker = Color(255,255,255,0);

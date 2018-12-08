@@ -70,7 +70,7 @@ function pmeta:AddWardenStatus()
 		return
 	end
 
-	self:SetModel("models/player/barney.mdl")
+	--self:SetModel("models/player/barney.mdl")
 	self:SetArmor(100)
 	JB.TRANSMITTER:SetJBWarden(self);
 
@@ -82,7 +82,7 @@ function pmeta:RemoveWardenStatus()
 	JB.TRANSMITTER:SetJBWarden(NULL);
 end
 function pmeta:SetupHands( ply )
-	if IsValid(ply) and ply ~= self then return end // we don't need in-eye spectator.
+	if IsValid(ply) and ply ~= self then return end -- we don't need in-eye spectator.
 
 	local oldhands = self:GetHands()
 	if ( IsValid( oldhands ) ) then

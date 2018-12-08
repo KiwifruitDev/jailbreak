@@ -71,10 +71,7 @@ concommand.Add("jb_warden_changecontrol",function(p,c,a)
 		return	
 	elseif opt == "PVP" then
 		JB.TRANSMITTER:SetJBWarden_PVPDamage(tobool(val));
-		JB:BroadcastNotification("Friendly fire is now "..(tobool(val) and "enabled" or "disabled").." for prisoners");
-	elseif opt == "PVPGuards" then
-		JB.TRANSMITTER:SetJBWarden_PVPDamageGuards(tobool(val));
-		JB:BroadcastNotification("Friendly fire is now "..(tobool(val) and "enabled" or "disabled").." for guards");
+		JB:BroadcastNotification("Friendly fire is now "..(tobool(val) and "enabled" or "disabled"));
 	elseif opt == "Pickup" then
 		JB.TRANSMITTER:SetJBWarden_ItemPickup(tobool(val));
 		JB:BroadcastNotification("Item pickup is now "..(tobool(val) and "enabled" or "disabled"));
@@ -108,6 +105,22 @@ local function spawnProp(p,typ,model)
 
 	hook.Call("JailBreakWardenSpawnProp",JB.Gamemode,p,typ,model);
 end
+concommand.Add("jb_warden_grapplinghooks",function(p,c,a)
+	if not IsValid(p) or not p.GetWarden or not p:GetWarden() or not tobool(JB.Config.wardenControl) then return end
+	JB:BroadcastNotification("All prisoners now have grappling hooks!");
+	for _,ply in ipairs(team.GetPlayers(TEAM_PRISONER)) do
+		local grapple = ents.Create( "sent_grapplehook_bpack" )
+		grapple:SetSlotName( "sent_grapplehook_bpack" )
+		grapple:Spawn()
+		grapple:SetKey( 36 )
+		print(grapple:GetKey().." 36")
+		if not grapple:Attach( ply, true ) then
+			print("removed grappling hook")
+			grapple:Remove()
+			return
+		end
+	end
+end);
 concommand.Add("jb_warden_spawn",function(p,c,a)
 	if not IsValid(p) or not p.GetWarden or not p:GetWarden() or not tobool(JB.Config.wardenControl) then return end
 	
@@ -125,6 +138,52 @@ concommand.Add("jb_warden_spawn",function(p,c,a)
 		spawnProp(p,"jb_ammobox")
 	end
 end);
+concommand.Add("jb_warden_scriptday",function(p,c,a)
+	if not IsValid(p) or not p.GetWarden or not p:GetWarden() or not tobool(JB.Config.wardenControl) then return end
+	if (IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBScriptday() == "") then	
+		local lr = a[1];
+		JB.TRANSMITTER:SetJBScriptday(lr)
+		for k,v in ipairs(ents.FindByClass("func_door"))do
+			v:Fire("Open",1)
+		end
+		for k,v in ipairs(ents.FindByClass("func_door_rotating"))do
+			v:Fire("Open",1)
+		end
+		for k,v in ipairs(ents.FindByClass("func_movelinear"))do
+			v:Fire("Open",1)
+		end
+		if (lr == "GangWarDay") then
+			JB:BroadcastNotification("The warden has initiated Gang War Day!");
+			JB:BroadcastNotification("All prisoners now have grappling hooks!");
+			print("ladies and gentlemen we have a winner")
+			for _,ply in ipairs( player.GetAll() ) do
+				ply:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/gangwarday.wav" ))
+				ply:StripWeapons();
+				ply:Give("weapon_jb_fists");
+				ply:Give("weapon_jb_knife");
+				ply:Give("weapon_jb_usp")
+				ply:Give("weapon_jb_mac10")
+				ply:SelectWeapon("weapon_jb_mac10")
+			end
+			for _,ply in ipairs(team.GetPlayers(TEAM_PRISONER)) do
+				ply:SetModel( "models/player/bloodz/slow_3.mdl" )
+				local grapple = ents.Create( "sent_grapplehook_bpack" )
+				grapple:SetSlotName( "sent_grapplehook_bpack" )
+				grapple:Spawn()
+				grapple:SetKey( 36 )
+				print(grapple:GetKey().." 36")
+				if not grapple:Attach( ply, true ) then
+					print("removed grappling hook")
+					grapple:Remove()
+					return
+				end
+			end
+			for _,ply in ipairs(team.GetPlayers(TEAM_GUARD)) do
+				ply:SetModel( "models/player/cripz/slow_3.mdl" )
+			end
+		end
+	end
+end)
 
 local pointerRemove = -1;
 concommand.Add("jb_warden_placepointer",function(p,c,a)

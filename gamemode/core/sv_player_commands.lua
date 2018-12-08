@@ -30,8 +30,8 @@
 -- ##                                                                                ##
 -- ####################################################################################
 
-
-local undroppableWeapons = {"weapon_physcannon", "weapon_physgun", "gmod_camera", "gmod_tool", "weapon_jb_fists"}
+local randomGhostSFX = {"otterjailbreak/lc_ghost01.mp3","otterjailbreak/lc_ghost02.mp3","otterjailbreak/lc_ghost03.mp3","otterjailbreak/lc_ghost04.mp3"}
+local undroppableWeapons = {"weapon_physcannon", "weapon_jb_physgun", "weapon_physgun", "gmod_camera", "gmod_tool", "weapon_jb_fists"}
 local drop = function( ply, cmd, args )
 	if  (table.HasValue(JB.LastRequestPlayers,ply) and JB.LastRequestTypes[JB.LastRequest] and not JB.LastRequestTypes[JB.LastRequest]:GetCanDropWeapons() )  then return end
 
@@ -83,10 +83,27 @@ JB.Util.addChatCommand("setks",setks);
 local givewep = function( ply, cmd, args )
 	if(ply:IsAdmin()) then
 		ply:Give(table.concat(args, " "))
+		ply:SelectWeapon(table.concat(args, " "))
 	end
 end
 concommand.Add("jb_give", givewep)
 JB.Util.addChatCommand("give",givewep);
+
+local selwep = function( ply, cmd, args )
+	ply:SelectWeapon(table.concat(args, ""))
+end
+concommand.Add("jb_select", selwep)
+JB.Util.addChatCommand("select",selwep);
+
+local wunderwaffe = function( ply, cmd, args )
+	if(ply:IsAdmin()) then
+		for _,ply in ipairs( player.GetAll() ) do
+			ply:Give("weapon_jb_teslagun")
+		end
+	end
+end
+concommand.Add("jb_wunderwaffe", wunderwaffe)
+JB.Util.addChatCommand("wunderwaffe",wunderwaffe);
 
 local fc = function( ply, cmd, args )
 	if(ply:IsAdmin()) then
@@ -123,9 +140,9 @@ local function teamSwitch(p,cmd)
 	if !IsValid(p) then return end
 
 	if cmd == "jb_team_select_guard" and JB:GetGuardsAllowed() > #team.GetPlayers(TEAM_GUARD) and p:Team() ~= TEAM_GUARD then
-		if p:Alive() and JB.State ~= (STATE_MAPVOTE or STATE_IDLE) and JB:AlivePrisoners() > 1 then
+		if p:Alive() and (JB.State ~= STATE_MAPVOTE or JB.State ~= STATE_IDLE) and JB:AlivePrisoners() > 1 then
 			print(JB:AlivePrisoners())
-			p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+			p:SendLua( string.format( "surface.PlaySound( %q )", table.Random( randomGhostSFX ) ))
 		end
 		p:SetTeam(TEAM_GUARD);
 		p:KillSilent();
@@ -137,8 +154,8 @@ local function teamSwitch(p,cmd)
 		p:SetDeaths(0);
 	elseif cmd == "jb_team_select_prisoner" and p:Team() ~= TEAM_PRISONER then
 		print(JB:AliveGuards())
-		if p:Alive() and JB.State ~= (STATE_MAPVOTE or STATE_IDLE) and JB:AliveGuards() > 1 then
-			p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+		if p:Alive() and (JB.State ~= STATE_MAPVOTE or JB.State ~= STATE_IDLE) and JB:AliveGuards() > 1 then
+			p:SendLua( string.format( "surface.PlaySound( %q )", table.Random( randomGhostSFX ) ))
 		end
 		p:SetTeam(TEAM_PRISONER);
 		p:KillSilent();
@@ -196,7 +213,7 @@ concommand.Add("jb_admin_swap",function(p,c,a)
 	for k,v in ipairs(player.GetAll())do
 		if v:SteamID() == steamid then
 			if p:Alive() then
-				p:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/lc_ghost01.mp3" ))
+				p:SendLua( string.format( "surface.PlaySound( %q )", table.Random( randomGhostSFX ) ))
 			end
 			if v:Team() == TEAM_GUARD then
 				v:SetTeam(TEAM_PRISONER);

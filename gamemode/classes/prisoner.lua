@@ -64,7 +64,6 @@ local randomSpecialWeapon = {
 }
 function PLAYER:Loadout()
 	self.Player:Give("weapon_jb_fists");
-
 	if math.random(1,JB.Config.prisonerSpecialChance) == 1 then
 		self.Player:Give(table.Random(randomSpecialWeapon)); -- give the player a rando waeapon from our table.
 	end
