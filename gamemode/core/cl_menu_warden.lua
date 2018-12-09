@@ -85,6 +85,7 @@ function JB.MENU_WARDEN()
 		
 		addButton(false,"Scriptdays",function() frame:Remove();JB.MENU_SCRIPTDAYS() end);
 		addButton(false,"Grappling hooks for prisoners",function() RunConsoleCommand("jb_warden_grapplinghooks") end);
+		addButton(false,"Toggle all cells/doors",function() RunConsoleCommand("jb_warden_opendoors") end);
 		addButton(tostring(IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden_PVPDamage()),"Friendlyfire for prisoners",function() RunConsoleCommand("jb_warden_changecontrol","PVP",tostring(not (IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden_PVPDamage()))) end);
 		addButton(tostring(IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden_ItemPickup()),"Item pickup",function() RunConsoleCommand("jb_warden_changecontrol","Pickup",tostring(not (IsValid(JB.TRANSMITTER) and JB.TRANSMITTER:GetJBWarden_ItemPickup()))); end);
 		

@@ -105,6 +105,19 @@ local function spawnProp(p,typ,model)
 
 	hook.Call("JailBreakWardenSpawnProp",JB.Gamemode,p,typ,model);
 end
+concommand.Add("jb_warden_opendoors",function(p,c,a)
+	if not IsValid(p) or not p.GetWarden or not p:GetWarden() or not tobool(JB.Config.wardenControl) then return end
+	JB:BroadcastNotification("All cells and doors have been toggled!");
+	for k,v in ipairs(ents.FindByClass("func_door"))do
+		v:Fire("Toggle",1)
+	end
+	for k,v in ipairs(ents.FindByClass("func_door_rotating"))do
+		v:Fire("Toggle",1)
+	end
+	for k,v in ipairs(ents.FindByClass("func_movelinear"))do
+		v:Fire("Toggle",1)
+	end
+end)
 concommand.Add("jb_warden_grapplinghooks",function(p,c,a)
 	if not IsValid(p) or not p.GetWarden or not p:GetWarden() or not tobool(JB.Config.wardenControl) then return end
 	JB:BroadcastNotification("All prisoners now have grappling hooks!");
