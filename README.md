@@ -12,7 +12,7 @@ To add a scriptday, simply add a line near the end of cl_menu_scriptday.lua (the
 ``ActivationLine`` will be used in the second part, and the material line is to be an icon used in the warden menu.
 
 
-After adding that line, add a line to sv_warden.lua under ``concommand.Add("jb_warden_scriptday",function(p,c,a)`` where the ``if (lr == "GangWarDay"`` statement is. Add an ``elseif (lr == "ActivationLine")`` there above the ``end``, from there you are free to add anything at will!
+After adding that line, add a line to sv_warden.lua under ``concommand.Add("jb_warden_scriptday",function(p,c,a)`` where the ``if (lr == "GangWarDay") then`` statement is. Add an ``elseif (lr == "ActivationLine") then`` above the ``end``, from there you are free to add anything at will!
 
 
 
