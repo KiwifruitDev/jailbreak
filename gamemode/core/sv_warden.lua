@@ -105,6 +105,36 @@ local function spawnProp(p,typ,model)
 
 	hook.Call("JailBreakWardenSpawnProp",JB.Gamemode,p,typ,model);
 end
+local function adminSpawn(p,typ,model)
+	local prop = ents.Create(typ);
+	prop:SetAngles(p:GetAngles());
+	prop:SetPos(p:EyePos() + p:GetAngles():Forward() * 60);
+	
+	if model then
+		prop:SetModel(model)
+	end
+	prop:Spawn();
+	prop:Activate();
+end
+concommand.Add("jb_admin_spawn",function(p,c,a)
+	if not IsValid(p) or not p:IsAdmin() then return end
+	
+	local opt = a[1];
+	print(opt)
+	if not opt then 
+		return
+	elseif opt == "HotDog" then
+		adminSpawn(p,"jb_hotdog")
+	elseif opt == "Crate" then
+		adminSpawn(p,"prop_physics_multiplayer","models/props_junk/wood_crate001a.mdl")
+	elseif opt == "Blockade" then
+		adminSpawn(p,"prop_physics_multiplayer","models/props_trainstation/TrackSign02.mdl")
+	elseif opt == "AmmoBox" then
+		adminSpawn(p,"jb_ammobox")
+	elseif opt == "Dickhead" then
+		adminSpawn(p,"jb_detective_dickhead")
+	end
+end);
 concommand.Add("jb_warden_opendoors",function(p,c,a)
 	if not IsValid(p) or not p.GetWarden or not p:GetWarden() or not tobool(JB.Config.wardenControl) then return end
 	JB:BroadcastNotification("All cells and doors have been toggled!");

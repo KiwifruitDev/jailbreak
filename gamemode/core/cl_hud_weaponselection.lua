@@ -115,7 +115,7 @@ function JB.Gamemode:PlayerBindPress(p, bind, pressed)
 
 	if not pressed then return false end
 
-	if string.find(bind, "invnext") then
+	if string.find(bind, "invnext") and LocalPlayer():GetActiveWeapon():GetClass() != "weapon_physgun" then
 		if LocalPlayer():Team() > 2 or !LocalPlayer():Alive() then return true  end
 		nScroll = nScroll + 1;
 		if nScroll > 4 then
@@ -129,7 +129,7 @@ function JB.Gamemode:PlayerBindPress(p, bind, pressed)
 		selectedTab = nScroll;
 		ArrangeSlots();
 		return true;
-	elseif string.find(bind, "invprev") then
+	elseif string.find(bind, "invprev") and LocalPlayer():GetActiveWeapon():GetClass() != "weapon_physgun" then
 		if LocalPlayer():Team() > 2 or !LocalPlayer():Alive() then return true  end
 
 		nScroll = nScroll-1;

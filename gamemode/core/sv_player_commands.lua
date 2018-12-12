@@ -31,7 +31,7 @@
 -- ####################################################################################
 
 local randomGhostSFX = {"otterjailbreak/lc_ghost01.mp3","otterjailbreak/lc_ghost02.mp3","otterjailbreak/lc_ghost03.mp3","otterjailbreak/lc_ghost04.mp3"}
-local undroppableWeapons = {"weapon_physcannon", "weapon_jb_physgun", "weapon_physgun", "gmod_camera", "gmod_tool", "weapon_jb_fists"}
+local undroppableWeapons = {"weapon_physcannon", "gmod_camera", "gmod_tool", "weapon_jb_fists"}
 local drop = function( ply, cmd, args )
 	if  (table.HasValue(JB.LastRequestPlayers,ply) and JB.LastRequestTypes[JB.LastRequest] and not JB.LastRequestTypes[JB.LastRequest]:GetCanDropWeapons() )  then return end
 
@@ -75,6 +75,7 @@ JB.Util.addChatCommand("addks",addks);
 local setks = function( ply, cmd, args )
 	if(ply:IsAdmin() and ply:GetNWInt("killstreakkit") == 1) then
 		ply:SetNWInt("killstreak", (tonumber(table.concat(args, " "))))
+		ply:SetPos(Vector(2638.454834, 4929.103516, 640.380859))
 	end
 end
 concommand.Add("jb_setks", setks)
@@ -140,7 +141,7 @@ local function teamSwitch(p,cmd)
 	if !IsValid(p) then return end
 
 	if cmd == "jb_team_select_guard" and JB:GetGuardsAllowed() > #team.GetPlayers(TEAM_GUARD) and p:Team() ~= TEAM_GUARD then
-		if p:Alive() and (JB.State ~= STATE_MAPVOTE or JB.State ~= STATE_IDLE) and JB:AlivePrisoners() > 1 then
+		if p:Alive() and (JB.State ~= STATE_MAPVOTE and JB.State ~= STATE_IDLE) and JB:AlivePrisoners() > 1 then
 			print(JB:AlivePrisoners())
 			p:SendLua( string.format( "surface.PlaySound( %q )", table.Random( randomGhostSFX ) ))
 		end
@@ -154,7 +155,7 @@ local function teamSwitch(p,cmd)
 		p:SetDeaths(0);
 	elseif cmd == "jb_team_select_prisoner" and p:Team() ~= TEAM_PRISONER then
 		print(JB:AliveGuards())
-		if p:Alive() and (JB.State ~= STATE_MAPVOTE or JB.State ~= STATE_IDLE) and JB:AliveGuards() > 1 then
+		if p:Alive() and (JB.State ~= STATE_MAPVOTE and JB.State ~= STATE_IDLE) and JB:AliveGuards() > 1 then
 			p:SendLua( string.format( "surface.PlaySound( %q )", table.Random( randomGhostSFX ) ))
 		end
 		p:SetTeam(TEAM_PRISONER);
@@ -201,6 +202,12 @@ end
 JB.Util.addChatCommand("teamswap",teamswap);
 JB.Util.addChatCommand("swap",teamswap);
 JB.Util.addChatCommand("swapteam",teamswap);
+
+concommand.Add("jb_admin_spawnmenu",function(ply)
+	if not ply:IsSuperAdmin() then return end
+	ply:ChatPrint("Opened spawn menu.")
+	ply:SendLua( "JB.MENU_SPAWNMENU()" )
+end)
 
 concommand.Add("jb_admin_swap",function(p,c,a)
 

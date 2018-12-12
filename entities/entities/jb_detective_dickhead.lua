@@ -30,85 +30,44 @@
 -- ##                                                                                ##
 -- ####################################################################################
 
+AddCSLuaFile();
 
-local pmeta = FindMetaTable("Player")
+ENT.Type             = "anim"
+ENT.Base             = "base_anim"
 
---[[ PLAYER CLASS SETTING ]]
-local oldSetTeam=pmeta.SetTeam;
-function pmeta:SetTeam(tm)
-	player_manager.SetPlayerClass( self, tm == TEAM_GUARD and "player_guard" or tm == TEAM_PRISONER and "player_prisoner" or "player_spectator");
-	oldSetTeam(self,tm);
-end
+function ENT:Initialize()    
+	if SERVER then
+		self:SetModel( "models/detective.mdl" );
+		timer.Simple(0, function() self:SetSequence( "pose_standing_01" ) end)
+		self:SetUseType(SIMPLE_USE);
+		self:PhysicsInit( SOLID_VPHYSICS )
+		self:SetMoveType(MOVETYPE_VPHYSICS);
+		self:SetSolid(SOLID_VPHYSICS);
 
---[[ PRISONER STATUS ]]
-function pmeta:AddRebelStatus()
-	if self:Team() ~= TEAM_PRISONER or not self:Alive() then
-		return
+		local phys = self:GetPhysicsObject()
+		if ( IsValid( phys ) ) then
+			phys:Wake()	
+		end
 	end
-
-	self:SetRebel(true);
-
-	JB:BroadcastNotification(self:Nick().." is rebelling!");
-
-	self:SetPlayerColor(Vector(1,0,0));
-	self:SetWeaponColor(Vector(1,0,0));
 end
-function pmeta:RemoveRebelStatus()
-	if not self.SetRebel then
-		return
+
+function ENT:Use(p)
+	local randomHealth = {"I got just the right thing for you.","Need a patch? I got something for ya.","Your health is low, I can patch ya up if you want.","Don't get me wrong but I believe you need medical assistance, correct?","Need a medic quick? I can help you with that."}
+	local randomGuns = {"Got somethings for ya to try, willing to buy?","Guns, guns, guns, I got some guns","While not drugs, I could hook you up with some guns", "Want some guns, you've come to the right place.","Totally legal gun exchange, right here in Jailbreak."}
+	local randomOfficer = {"Everything is under control, officer!","Totally disarmed here, officer!","Nothing illegal going on here, officer!","Nothing suspicious going on here, officer!","No crimes have been committed here, officer!","Officer, I must say it is a beautiful day outside.","Officer, how's the weather like?"}
+	if IsValid(p) and p:Health() < 100 and p:Team() != TEAM_GUARD then
+		p:ChatPrint( table.Random( randomHealth ) )
+		p:SendLua( "JB.MENU_HEAL()" )
+	elseif IsValid(p) and p:Health() >= 100 and p:Team() != TEAM_GUARD then
+		if(p:GetNWBool("boughtweapon") == false or p:GetNWBool("boughtweapon") == nil) then
+			p:ChatPrint( table.Random( randomGuns ) )
+			p:SendLua( "JB.MENU_GUNMENU()" )
+		end
+	elseif IsValid(p) and p:Team() == TEAM_GUARD then
+		p:ChatPrint( table.Random( randomOfficer ) )
 	end
-
-	self:SetRebel(false);
-
-    self:SetPlayerColor(Vector(.9,.9,.9));
-	self:SetWeaponColor(Vector(.9,.9,.9));
 end
 
---[[ WARDEN STATUS ]]
-function pmeta:AddWardenStatus()
-	if self:Team() ~= TEAM_GUARD or not self:Alive() or not IsValid(JB.TRANSMITTER) then
-		return
-	end
-
-	--self:SetModel("models/player/barney.mdl")
-	self:SetArmor(100)
-	JB.TRANSMITTER:SetJBWarden(self);
-
+function ENT:Draw()
+	self:DrawModel();
 end
-function pmeta:RemoveWardenStatus()
-	if not self:Alive() and IsValid(JB.TRANSMITTER) then return end
-
-	self:SetModel("models/player/police.mdl")
-	JB.TRANSMITTER:SetJBWarden(NULL);
-end
-function pmeta:SetupHands( ply )
-	if IsValid(ply) and ply ~= self then return end -- we don't need in-eye spectator.
-
-	local oldhands = self:GetHands()
-	print(self:GetHands())
-	if ( IsValid( oldhands ) ) then
-		oldhands:Remove()
-	end
-
-	local hands = ents.Create( "gmod_hands" )
-	if ( IsValid( hands ) ) then
-		hands:DoSetup( self, ply )
-		hands:Spawn()
-	end
-
-end
-
---[[ NOTIFICATIONS ]]
-util.AddNetworkString("JB.SendNotification");
-function pmeta:SendNotification(text)
-	net.Start("JB.SendNotification");
-	net.WriteString(text);
-	net.Send(self);
-end
-
-util.AddNetworkString("JB.SendQuickNotification");
-function pmeta:SendQuickNotification(msg)
-	net.Start("JB.SendQuickNotification");
-	net.WriteString(msg);
-	net.Send(self);
-end;

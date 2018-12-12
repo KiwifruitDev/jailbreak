@@ -59,8 +59,9 @@ SWEP.Primary.Delay			= 1
 SWEP.Primary.DefaultClip	= 18
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "AR2AltFire"
-SWEP.Range = 2*GetConVarNumber( "sk_vortigaunt_zap_range",100)*12	
-
+SWEP.Range = 2*GetConVarNumber( "sk_vortigaunt_zap_range",100)*12
+	
+SWEP.ShowWorldModel = false
 SWEP.Positions = {};
 SWEP.Positions[1] = {pos = Vector(0,0,0), ang = Vector(0,0,0)};
 SWEP.Positions[2] = {pos = Vector(-6.56, -10.08, 2.519), ang = Vector(2.4, 0.1, 0)};
@@ -155,7 +156,7 @@ function SWEP:PrimaryAttack()
 		end
 	end
 	self:TakePrimaryAmmo(1);
-	if self:Clip1() <= 0 and tobool(self.Owner:GetInfoNum( "jb_cl_option_autoreload", "0" )) then
+	if self:Clip1() <= 0 and tobool(self.Owner:GetInfoNum( "jb_cl_option_autoreload", "1" )) then
 		self:Reload();
 	end
 end

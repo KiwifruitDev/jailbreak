@@ -72,7 +72,7 @@ end
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar( "Bool", 0, "Rebel" );
 
-	self.Player:NetworkVar( "Bool", 1, "InGuardZone" );
+	--self.Player:NetworkVar( "Bool", 1, "InGuardZone" );
 end
 
 local prisonerModels = {

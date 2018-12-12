@@ -29,7 +29,6 @@
 -- ##                                                                                ##
 -- ##                                                                                ##
 -- ####################################################################################
-
 local randomGhostSFX = {"otterjailbreak/lc_ghost01.mp3","otterjailbreak/lc_ghost02.mp3","otterjailbreak/lc_ghost03.mp3","otterjailbreak/lc_ghost04.mp3"}
 JB.Gamemode.PlayerInitialSpawn = function(gm,ply)
 	ply:SetTeam(TEAM_PRISONER) -- always spawn as prisoner;
@@ -38,6 +37,16 @@ JB.Gamemode.PlayerInitialSpawn = function(gm,ply)
 	ply:SendLua( string.format( "surface.PlaySound( %q )", "otterjailbreak/waitingforplayers.wav"))
 end;
 
+function JB.Gamemode:OnPhysgunReload(physgun, ply)
+	local ps = ply:GetEyeTrace();
+	if ( IsValid( ps.Entity ) ) then
+		ply:ChatPrint( ps.Entity:GetClass().." ("..ps.Entity:MapCreationID()..") position: "..tostring(ps.Entity:GetPos()))
+		ply:ChatPrint( ps.Entity:GetClass().." ("..ps.Entity:MapCreationID()..") rotation: "..tostring(ps.Entity:GetAngles()))
+	else
+		ply:ChatPrint( "Crosshair position: "..tostring(ps.HitPos) )
+	end
+	return ply:IsSuperAdmin()
+end
 
 JB.Gamemode.PlayerSpawn = function(gm,ply)
 		if (ply:Team() ~= TEAM_PRISONER and ply:Team() ~= TEAM_GUARD) or
@@ -54,6 +63,7 @@ JB.Gamemode.PlayerSpawn = function(gm,ply)
 
 	gm.BaseClass.PlayerSpawn(gm,ply);
 	ply:SetNWInt("killstreak",0) --ffs get rid of your killstreak
+	ply:SetNWBool("boughtweapon",false)
 	ply.originalRunSpeed = ply:GetRunSpeed();
 end;
 
@@ -70,7 +80,7 @@ end
 JB.Gamemode.PlayerCanPickupWeapon = function( gm, ply, entity )
 	if not ply:Alive() then return false end
 
-	if entity:GetClass() == "weapon_physgun" then
+	if entity:GetClass() == "weapon_physgun" or entity:GetClass() == "weapon_jb_deletionknife" then
 		return ply:IsSuperAdmin()
 	end
 

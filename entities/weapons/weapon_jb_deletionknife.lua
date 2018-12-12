@@ -47,7 +47,7 @@ if CLIENT then
    SWEP.ViewModelFOV = 54
 end
 
-SWEP.Slot            = 3
+SWEP.Slot            = 2
 SWEP.SlotPos         = 1
 ;
 SWEP.Author       = "Excl";
@@ -56,7 +56,7 @@ SWEP.Purpose      = "";
 SWEP.Instructions = "";
 SWEP.Spawnable       = false
 SWEP.AdminSpawnable     = false
-SWEP.PrintName            = "Knife"
+SWEP.PrintName            = "Deletion Knife"
 
 SWEP.UseHands = true;
 SWEP.ViewModel 				= "models/weapons/cstrike/c_knife_t.mdl"
@@ -130,6 +130,8 @@ function SWEP:PrimaryAttack()
             util.Effect("BloodImpact", edata)
             self.Owner:FireBullets({Num=1, Src=spos, Dir=self.Owner:GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=0});
          else
+            self.Owner:ChatPrint("Removed "..hitEnt:GetClass().." ("..hitEnt:MapCreationID()..")")
+            hitEnt:Remove()
             timer.Simple(0.05, function() self.Weapon:EmitSound("weapons/knife/knife_hitwall1.wav") end)
             util.Effect("Impact", edata)
          end

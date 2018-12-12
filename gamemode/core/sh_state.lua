@@ -213,16 +213,23 @@ Round System
 
 ]]--
 JB.ThisRound = {};
-local randomWeapons = {{"Wunderwaffe DG-2",125,"weapon_jb_teslagun"}}
-__roundweapon = {"Mac 10",75,"weapon_jb_mac10"}
+
+local randomWeapons = {{"Wunderwaffe DG-2",100,"weapon_jb_teslagun",3},{"Mac 10",75,"weapon_jb_mac10",1},{"Knife",10,"weapon_jb_knife",3},{"Glock",35,"weapon_jb_glock",2},{"AWP",45,"weapon_jb_awp",1},{"AK-47",50,"weapon_jb_ak47",1},{"FAMAS",45,"weapon_jb_famas",1}}
+__roundweapon = {"Mac 10",75,"weapon_jb_mac10",1}
+
 local wantStartup = false;
 function JB:NewRound(rounds_passed)
 	rounds_passed = rounds_passed or JB.RoundsPassed;
-	__roundweapon = table.Random( randomWeapons )
-	print("round weapon: "..__roundweapon[1])
 	JB.ThisRound = {};
 
 	if SERVER then
+		__roundweapon = table.Random( randomWeapons )
+		print("round weapon: "..__roundweapon[1])
+		util.AddNetworkString( "roundweapon" )
+		net.Start( "roundweapon" )
+		net.WriteTable( __roundweapon )
+		net.Broadcast()
+		
 		game.CleanUpMap();
 		if IsValid(JB.TRANSMITTER) then
 			JB.TRANSMITTER:SetJBScriptday("")
@@ -277,10 +284,17 @@ function JB:NewRound(rounds_passed)
 			JB.Util.iterate(player.GetAll()):Freeze(false);
 		end)
 		local detective = ents.Create( "jb_detective_dickhead" )
-		print(detective)
-		detective.SetPos(Vector(2638.454834, 4929.103516, 640.380859))
-		detective.SetAngles(Vector(1.227, 148.280, 0.717))
-		
+		if game.GetMap() == "jb_new_summer_v2" then
+			detective:SetPos(Vector(732.234192, 818.257446, -50.614017))
+			detective:SetAngles(Angle(-0.605, -56.848, -1.069))
+		elseif game.GetMap() == "jb_lego_jail_v4" then
+			detective:SetPos(Vector(-980.938843, 410.923096, 136.373322))
+			detective:SetAngles(Angle(-0.618, 32.796, 0.155))
+		elseif game.GetMap() == "jb_space_jail_v1_fix2" then
+			detective:SetPos(Vector(534.441467, -170.972672, 68.180725))
+			detective:SetAngles(Angle(0.000, 43.074, 0.000))
+		end
+		detective:Spawn()
 		net.Start("JB.SendRoundUpdate"); net.WriteInt(STATE_SETUP,8); net.WriteInt(rounds_passed,32); net.Broadcast();
 	elseif CLIENT and IsValid(LocalPlayer()) then
 		notification.AddLegacy("Round "..rounds_passed,NOTIFY_GENERIC);

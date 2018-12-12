@@ -86,7 +86,7 @@ if SERVER then
 
 	cvarAutoReload = {};
 	function cvarAutoReload:GetBool(ply)
-		return tobool(ply:GetInfoNum( "jb_cl_option_autoreload", "0" ))
+		return tobool(ply:GetInfoNum( "jb_cl_option_autoreload", "1" ))
 	end
 end
 
@@ -94,7 +94,7 @@ if CLIENT then
 	include("client.lua");
 
 	cvarAimToggle = CreateClientConVar( "jb_cl_option_toggleaim", "0", true, true )
-	cvarAutoReload = CreateClientConVar( "jb_cl_option_autoreload", "0", true, true )
+	cvarAutoReload = CreateClientConVar( "jb_cl_option_autoreload", "1", true, true )
 end
 
 SWEP.Primary.DefaultClip	= SWEP.Primary.ClipSize; -- See: gamemode/core/sh_weapon_hack.lua

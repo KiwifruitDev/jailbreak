@@ -106,6 +106,12 @@ JB.Commands = {};
 function JB.Util.addChatCommand(cmd,func)
 	JB.Commands[cmd] = {func=func};
 end
+hook.Add( "PlayerSay", "ChatCommands.Collection", function( ply, text, team )
+	if ( text == "!collection" ) then
+		ply:ChatPrint("https://steamcommunity.com/sharedfiles/filedetails/?id=1478358716")
+		return ""
+	end
+end )
 hook.Add("PlayerSay","JBUtil.PlayerSay.ChatCommands",function(p,t)
 	if (p.JBNextCmd and p.JBNextCmd > CurTime()) or not IsValid(p) or not t then return end
 	p.JBNextCmd = CurTime()+1; -- prevent spam

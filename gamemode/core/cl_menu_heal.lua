@@ -30,85 +30,46 @@
 -- ##                                                                                ##
 -- ####################################################################################
 
+local color_text = Color(230,230,230,200);
 
-local pmeta = FindMetaTable("Player")
-
---[[ PLAYER CLASS SETTING ]]
-local oldSetTeam=pmeta.SetTeam;
-function pmeta:SetTeam(tm)
-	player_manager.SetPlayerClass( self, tm == TEAM_GUARD and "player_guard" or tm == TEAM_PRISONER and "player_prisoner" or "player_spectator");
-	oldSetTeam(self,tm);
-end
-
---[[ PRISONER STATUS ]]
-function pmeta:AddRebelStatus()
-	if self:Team() ~= TEAM_PRISONER or not self:Alive() then
-		return
+local frame;
+local randomHealed = {"All patched up and ready to go!","Thank you for doing business with me!","You're all set, don't tell anyone you saw me.","You're healed up. This never happened, head out now!","Body armor is in place and you're healed up. You're free to go!"}
+function JB.MENU_HEAL()
+	if IsValid(frame) then frame:Remove() end
+	
+	frame = vgui.Create("JB.Frame");
+	frame:SetTitle("Detective Dickhead");
+	
+	local yBottom = 30;
+	frame:SetWide(500);
+	local lbl = Label("Purchase 100% Health/Armor for 15 Pennies?",frame);
+		lbl:SetFont("JBLarge");
+		lbl:SetColor(JB.Color["#EEE"]);
+		lbl:SizeToContents();
+		lbl:SetPos(15,yBottom + 15);
+	yBottom = lbl.y + lbl:GetTall();
+	local function addButton(name,click)
+		local btn = frame:Add("JB.Button");
+		btn:SetPos(15,yBottom+15);
+		btn:SetSize(frame:GetWide() - 30, 32);
+		btn:SetText(name);
+		btn.OnMouseReleased = click;
+		
+		yBottom = btn.y + btn:GetTall();
 	end
-
-	self:SetRebel(true);
-
-	JB:BroadcastNotification(self:Nick().." is rebelling!");
-
-	self:SetPlayerColor(Vector(1,0,0));
-	self:SetWeaponColor(Vector(1,0,0));
-end
-function pmeta:RemoveRebelStatus()
-	if not self.SetRebel then
-		return
+	if (LocalPlayer().PS_Points >= 15) then
+		local function SetHP( hp )
+			LocalPlayer():ChatPrint( table.Random( randomHealed ) )
+			net.Start 'sethealth'
+			net.WriteInt( hp, 32 )
+			net.SendToServer()
+		end
+		addButton("Yes, make purchase!",function() frame:Remove();SetHP(100); end);
+		addButton("No, I want to buy a weapon.",function() frame:Remove(); end);
+	else
+		addButton("No, I don't have enough pennies! I want to buy a weapon.",function() frame:Remove(); end);
 	end
-
-	self:SetRebel(false);
-
-    self:SetPlayerColor(Vector(.9,.9,.9));
-	self:SetWeaponColor(Vector(.9,.9,.9));
+    frame:SetTall(yBottom+15);
+	frame:Center();
+	frame:MakePopup();
 end
-
---[[ WARDEN STATUS ]]
-function pmeta:AddWardenStatus()
-	if self:Team() ~= TEAM_GUARD or not self:Alive() or not IsValid(JB.TRANSMITTER) then
-		return
-	end
-
-	--self:SetModel("models/player/barney.mdl")
-	self:SetArmor(100)
-	JB.TRANSMITTER:SetJBWarden(self);
-
-end
-function pmeta:RemoveWardenStatus()
-	if not self:Alive() and IsValid(JB.TRANSMITTER) then return end
-
-	self:SetModel("models/player/police.mdl")
-	JB.TRANSMITTER:SetJBWarden(NULL);
-end
-function pmeta:SetupHands( ply )
-	if IsValid(ply) and ply ~= self then return end -- we don't need in-eye spectator.
-
-	local oldhands = self:GetHands()
-	print(self:GetHands())
-	if ( IsValid( oldhands ) ) then
-		oldhands:Remove()
-	end
-
-	local hands = ents.Create( "gmod_hands" )
-	if ( IsValid( hands ) ) then
-		hands:DoSetup( self, ply )
-		hands:Spawn()
-	end
-
-end
-
---[[ NOTIFICATIONS ]]
-util.AddNetworkString("JB.SendNotification");
-function pmeta:SendNotification(text)
-	net.Start("JB.SendNotification");
-	net.WriteString(text);
-	net.Send(self);
-end
-
-util.AddNetworkString("JB.SendQuickNotification");
-function pmeta:SendQuickNotification(msg)
-	net.Start("JB.SendQuickNotification");
-	net.WriteString(msg);
-	net.Send(self);
-end;

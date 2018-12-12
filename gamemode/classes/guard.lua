@@ -80,7 +80,7 @@ function PLAYER:Loadout()
 end
 
 function PLAYER:SetupDataTables()
-	self.Player:NetworkVar( "Bool", 1, "InGuardZone" );
+	--self.Player:NetworkVar( "Bool", 1, "InGuardZone" );
 end
 
 

@@ -37,7 +37,7 @@ AddCSLuaFile()
 
 SWEP.PrintName		= "Fists";
 
-SWEP.UseHands = true;
+SWEP.UseHands = false;
 
 SWEP.Author			= "Excl"
 SWEP.Purpose		= ""
