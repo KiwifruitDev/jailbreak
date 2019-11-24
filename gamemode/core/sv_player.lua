@@ -85,7 +85,7 @@ JB.Gamemode.PlayerCanPickupWeapon = function( gm, ply, entity )
 	end
 
 	if not ply:CanPickupWeapon(entity) then return false end
-
+	
 	if entity.IsDropped and (not entity.BeingPickedUp or entity.BeingPickedUp ~= ply) then
 		return false;
 	end
