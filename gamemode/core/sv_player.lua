@@ -107,6 +107,7 @@ JB.Gamemode.IsSpawnpointSuitable = function()
 end
 
 JB.Gamemode.PlayerDeath = function(gm, victim, weapon, killer)
+	victim:StripWeapons()
 	if victim == killer and victim:GetNWInt("killstreak") >=4 then
 		if victim:Team() == 1 then --accounce death sfx for those who have killstreaks
 			for _,ply in ipairs( player.GetAll() ) do
